@@ -8,8 +8,15 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@tinymce/tinymce-vue": "^3.2.0",
     "core-js": "^3.6.4",
-    "vue": "^2.6.11"
+    "less": "^3.11.1",
+    "less-loader": "^6.0.0",
+    "quill": "^2.0.0-dev.3",
+    "quill-better-table": "^1.2.8",
+    "tinymce": "^5.2.2",
+    "vue": "^2.6.11",
+    "vue-quill-editor": "^3.0.6"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.3.0",
