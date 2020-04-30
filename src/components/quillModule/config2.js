@@ -25,7 +25,7 @@ const config = {
   container: '#toolbar',
   handlers: {
       'table': function () {
-          this.quill.getModule('table').insertTable(2, 3)
+          this.quill.getModule('table').insertTable(2, 2)
       },
       'table-insert-row': function () {
           this.quill.getModule('table').insertRowBelow()
@@ -38,6 +38,9 @@ const config = {
       },
       'table-delete-column': function () {
           this.quill.getModule('table').deleteColumn()
+      },
+      'table-delete': function () {
+        this.quill.getModule('table').deleteTable()
       }
   },
 }

@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <myQuill :value="content" v-model="delta" @input="getContent($event)"/>
-    <p>{{text}}</p>
+    <myQuill v-model="content" @input="getContent($event)" @focus="getFocus($event)"/>
+    <p>{{content}}</p>
     <!-- <tiny /> -->
     <!-- <quill /> -->
   </div>
@@ -19,16 +19,18 @@ export default {
     myQuill,
     // tiny
   },
-  data() {
+data() {    
     return {
-      content: '222',
-      delta: {},
-      text: ''
+      content: '',
     }
   },
   methods: {
     getContent(content) {
-      this.text = content
+      console.log(content)
+    },
+    getFocus(quill) {
+      console.log(quill)
+      // console.log(quill.getBounds())
     }
   }
 }
