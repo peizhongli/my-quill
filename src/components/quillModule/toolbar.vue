@@ -76,8 +76,8 @@ export default {
   },
   mounted() {
     this.$nextTick(()=>{
-      let toolbar = document.querySelector('.my-quill #toolbar')
-      toolbar.querySelector('.ql-image').innerHTML = '';
+      // let toolbar = document.querySelector('.my-quill #toolbar')
+      // toolbar.querySelector('.ql-image').innerHTML = '';
 
       // this.$el.querySelector('.ql-table-insert-row').innerHTML = `—`
       // this.$el.querySelector('.ql-table-insert-column').innerHTML = `|`
@@ -97,11 +97,11 @@ export default {
     border: 1px solid #ccc;
   }
   .ql-image {
-    background: url(../../assets/logo.png) no-repeat;
-    background-size: contain;
+    // background: url(../../assets/logo.png) no-repeat;
+    //  background-size: contain;
   }
   .ql-image:hover {
-    opacity: .7
+    // opacity: .7
   }
   .modal {
     position: absolute;

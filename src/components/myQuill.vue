@@ -12,6 +12,12 @@ import Quill from 'quill'
 import 'quill/dist/quill.snow.css'
 import config from './quillModule/config2.js'
 import toolbar from './quillModule/toolbar.vue'
+
+let Size = Quill.import('attributors/style/size');
+console.log(Size)
+Size.whitelist = ['12px', '14px', '16px', '18px'];
+Quill.register(Size, true); 
+
 export default {
   name: 'editor',
   components: {

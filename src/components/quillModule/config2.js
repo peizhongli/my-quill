@@ -24,6 +24,15 @@ const config = {
   // ],
   container: '#toolbar',
   handlers: {
+    'size': function(value) {
+        
+        let range = this.quill.selection.savedRange;
+        // let formats = this.quill.getFormat(range);
+        console.log(range,value)
+        this.quill.formatText(range.index,range.length,{
+          'size': value,
+        });
+      },
       'table': function () {
           this.quill.getModule('table').insertTable(2, 2)
       },
