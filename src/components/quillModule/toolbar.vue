@@ -76,6 +76,7 @@ export default {
   },
   mounted() {
     this.$nextTick(()=>{
+      console.log(this)
       // let toolbar = document.querySelector('.my-quill #toolbar')
       // toolbar.querySelector('.ql-image').innerHTML = '';
 
