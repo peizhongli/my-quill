@@ -1,11 +1,10 @@
 import Vue from 'vue'
 import App from './App.vue'
-// import SvgIcon from '@/components/SvgIcon.vue'    
+import Element from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
 
-//引入svg组件
 
-//全局注册icon-svg
-// Vue.component('SvgIcon', SvgIcon)
+Vue.use(Element, { size: 'small' });
 
 Vue.config.productionTip = false
 

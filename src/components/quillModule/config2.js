@@ -25,32 +25,34 @@ const config = {
   container: '#toolbar',
   handlers: {
     'size': function(value) {
-        
-        let range = this.quill.selection.savedRange;
-        // let formats = this.quill.getFormat(range);
-        console.log(range,value)
-        this.quill.formatText(range.index,range.length,{
-          'size': value,
-        });
-      },
-      'table': function () {
-          this.quill.getModule('table').insertTable(2, 2)
-      },
-      'table-insert-row': function () {
-          this.quill.getModule('table').insertRowBelow()
-      },
-      'table-insert-column': function () {
-          this.quill.getModule('table').insertColumnRight()
-      },
-      'table-delete-row': function () {
-          this.quill.getModule('table').deleteRow()
-      },
-      'table-delete-column': function () {
-          this.quill.getModule('table').deleteColumn()
-      },
-      'table-delete': function () {
+    let range = this.quill.selection.savedRange;
+    // let formats = this.quill.getFormat(range);
+    console.log(range,value)
+    this.quill.formatText(range.index,range.length,{
+        'size': value,
+    });
+    },
+    'table': function () {
+        this.quill.getModule('table').insertTable(2, 2)
+    },
+    'table-insert-row': function () {
+        this.quill.getModule('table').insertRowBelow()
+    },
+    'table-insert-column': function () {
+        this.quill.getModule('table').insertColumnRight()
+    },
+    'table-delete-row': function () {
+        this.quill.getModule('table').deleteRow()
+    },
+    'table-delete-column': function () {
+        this.quill.getModule('table').deleteColumn()
+    },
+    'table-delete': function () {
         this.quill.getModule('table').deleteTable()
-      }
+    },
+    'link': function() {
+        console.log('超链接')
+    }
   },
 }
 export default config

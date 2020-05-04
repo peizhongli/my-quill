@@ -11,12 +11,13 @@ import Quill from 'quill'
 // 引入样式
 import 'quill/dist/quill.snow.css'
 import config from './quillModule/config2.js'
+import Link from './quillModule/link.js'
 import toolbar from './quillModule/toolbar.vue'
 
 let Size = Quill.import('attributors/style/size');
-console.log(Size)
 Size.whitelist = ['12px', '14px', '16px', '18px'];
 Quill.register(Size, true); 
+Quill.register(Link, true)
 
 export default {
   name: 'editor',
@@ -37,10 +38,14 @@ export default {
         modules: {
           toolbar: config,
           table: true,
+          // clipboard: {
+          //     matchVisual: false
+          // },
         },
         placeholder: '点击输入 ...'
       },
       focusIndex: 0, // 当前聚焦位置
+      selectionText: '', // 当前选中文字
     }
   },
   mounted() {
@@ -87,6 +92,7 @@ export default {
             this.setTable()
           } else {
             var text = this.quill.getText(range.index, range.length);
+            this.selectionText = text
             console.log('User has highlighted', text);
           }
         }
@@ -95,12 +101,10 @@ export default {
     },
     setTable() {
       let line = this.quill.getLine(this.focusIndex)[0]
-      console.log(line.constructor.name)
       if(line.constructor.name=='TableCell') {
-        console.log('show')
+        console.log('showtablerwrap')
         this.$refs.toolbar.showTableWrap()
       } else {
-        console.log('hide')
         this.$refs.toolbar.hideTableWrap()
       }
     }

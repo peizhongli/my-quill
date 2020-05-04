@@ -16,7 +16,7 @@
       <button class="ql-list" value="bullet" title="无序列表"></button>
       <button class="ql-script" value="super" title="上标"></button>
       <button class="ql-script" value="sub" title="下标"></button>
-      <button class="ql-link" title="超链接"></button>
+      <button class="ql-link" title="超链接" @click="showLink"></button>
       <select class="ql-color" value="color" title="字体颜色" @click="insertImgClick($event)"></select>
       <select class="ql-background" value="color" title="背景颜色"></select>
       <button class="ql-image" title="图片" @click="insertImgClick($event)"></button>  <!-- 插入图片 -->
@@ -28,14 +28,17 @@
       <div class="modal" v-show="modalShow" @click="hideModal">
 
       </div>
+      <link-dialog ref="link" @save="setLink($event)"/>
     </div>
     <table-wrap :visibile="tableWrapShow" ref="tableBtnGroup"/>
   </div>
 </template>
 <script>
+import Quill from 'quill'
 import tableWrap from './tableWrap'
+import linkDialog from './linkDialog'
 export default {
-  components: {tableWrap},
+  components: {tableWrap,linkDialog},
   data() {
     return {
       tableWrapShow: false,
@@ -50,8 +53,14 @@ export default {
       console.log(e,this)
     },
     fileInsert() {},
-    changeToSource(e) {
-      console.log('打开源码模式',e)
+    showLink() {
+      this.$refs.link.show(this.$parent.selectionText)
+    },
+    setLink(data) {
+      console.log(data)
+      this.$parent.quill.format('link', data, Quill.sources.USER);
+    },
+    changeToSource() {
       this.modalShow = true;
       let quill = this.$parent.quill.container.firstChild
       quill.innerText = quill.innerHTML.replace(/<br>/g,'');
@@ -205,6 +214,12 @@ export default {
     background-image: url(../../assets/icons/video.png);
     &.ql-active {
       background-image: url(../../assets/icons/video_active.png);
+    }
+  }
+  .ql-table {
+    background-image: url(../../assets/icons/table.png);
+    &.ql-active {
+      background-image: url(../../assets/icons/table_active.png);
     }
   }
   .ql-source {
