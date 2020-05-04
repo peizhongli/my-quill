@@ -46,6 +46,7 @@ export default {
   mounted() {
     // 初始化编辑器
     this._initEditor()
+    // this.quill = new Quill(this.$refs.editor, this.options);
   },
   methods: {
     _initEditor() {
@@ -66,6 +67,7 @@ export default {
         let text = this.quill.getText()
         let html = this.quill.root.innerHTML
         if (html === '<p><br></p>') {
+          console.log('我猜是因为你 哼')
           html = ''
           this.quill.setText(html)
         }
@@ -105,28 +107,42 @@ export default {
   },
   watch: {
     // 监听外部值的传入，用于将值赋予编辑器
-    value (val) {
+    // value (val) {
       
-      console.log(val)
-      // 如果编辑器没有初始化，则停止赋值
-      if (!this.quill) {
-        return
-      }
+    //   console.log(val)
+    //   // 如果编辑器没有初始化，则停止赋值
+    //   if (!this.quill) {
+    //     return
+    //   }
 
-      // 获取编辑器当前内容
-      let content = this.quill.root.innerHTML
+    //   // 获取编辑器当前内容
+    //   let content = this.quill.root.innerHTML
 
-      // 外部传入了新值，而且与当前编辑器的内容不一致
-      if (val && val !== content) {
-        // 将外部传入的HTML内容转换成编辑器识别的delta对象
-        let delta = this.quill.clipboard.convert({
-          html: val
-        })
+    //   // 外部传入了新值，而且与当前编辑器的内容不一致
+    //   if (val && val !== content) {
+    //     // 将外部传入的HTML内容转换成编辑器识别的delta对象
+    //     let delta = this.quill.clipboard.convert({
+    //       html: val
+    //     })
 
-        // 编辑器的内容需要接收delta对象
-        this.quill.setContents(delta)
-      }
-    }
+    //     // 编辑器的内容需要接收delta对象
+    //     this.quill.setContents(delta)
+    //   }
+    // }
+    // value(newVal) {
+    //   let content =this.quill.root.innerHTML
+    //     if (this.quill) {
+    //         console.log('newVal',newVal)
+
+    //       if (newVal && newVal !== content) {
+    //         this.content = newVal
+    //         this.quill.clipboard.dangerouslyPasteHTML(this.focusIndex, newVal);
+    //         // this.quill.pasteHTML(newVal)
+    //       } else if(!newVal) {
+    //         this.quill.setText('')
+    //       }
+    //     }
+    //   },
   },
 }
 </script>

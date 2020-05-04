@@ -93,11 +93,16 @@ export default {
       quill.addEventListener("click", ()=>{
         if(colorBtn.dataset.value) {
           colorBtn.querySelector('.color-bar').style.background = colorBtn.dataset.value
+        } else {
+          colorBtn.querySelector('.color-bar').style.background = ''
         }
       })
       quill.addEventListener("click", ()=> {
         if(bgBtn.dataset.value) {
           bgBtn.style.backgroundColor = bgBtn.dataset.value
+        }
+        else {
+          bgBtn.style.backgroundColor = ''
         }
       })
       
