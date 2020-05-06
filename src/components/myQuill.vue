@@ -2,6 +2,7 @@
   <div class="my-quill">
     <toolbar ref="toolbar" />
     <div ref="editor"></div>
+    <p>当前字数：{{contentLength}}</p>
   </div>
 </template>
 
@@ -12,12 +13,14 @@ import Quill from 'quill'
 import 'quill/dist/quill.snow.css'
 import config from './quillModule/config2.js'
 import Link from './quillModule/link.js'
+import Video from './quillModule/video.js'
 import toolbar from './quillModule/toolbar.vue'
 
 let Size = Quill.import('attributors/style/size');
 Size.whitelist = ['12px', '14px', '16px', '18px'];
 Quill.register(Size, true); 
 Quill.register(Link, true)
+Quill.register(Video, true)
 
 export default {
   name: 'editor',
@@ -46,7 +49,8 @@ export default {
       },
       focusText: null,
       // focusIndex: 0, // 当前聚焦位置
-      // selectionText: '', // 当前选中文字
+      selectionText: '', // 当前选中文字
+      contentLength: 0, // 内容长度
     }
   },
   mounted() {
@@ -55,7 +59,7 @@ export default {
     // this.quill = new Quill(this.$refs.editor, this.options);
 
     // 纯文本粘贴
-    // this.editor.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta) => {
+    // this.quill.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta) => {
     //   delta.ops = delta.ops.map(op => {
     //     return {
     //       insert: op.insert
@@ -83,12 +87,17 @@ export default {
         let text = this.quill.getText()
         let html = this.quill.root.innerHTML
         if (html === '<p><br></p>') {
-          console.log('我猜是因为你 哼')
           html = ''
           this.quill.setText(html)
         }
         this.$emit('input', html)
         this.$emit('change', {html,quill,text})
+        // 设置最大长度
+        this.contentLength = quill.getText().length
+        if(this.contentLength>10) {
+          quill.deleteText(10, 4)
+        }
+        // 判断是否触发表格
         this.setTable()
         
       })
@@ -165,6 +174,7 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+
 /deep/.ql-container {
   border-top: 0;
   table {

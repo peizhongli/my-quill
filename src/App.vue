@@ -2,22 +2,16 @@
   <div id="app">
     <myQuill v-model="content" @input="getContent($event)" @focus="getFocus($event)"/>
     <p>{{content}}</p>
-    <!-- <tiny /> -->
-    <!-- <quill /> -->
   </div>
 </template>
 
 <script>
-// import tiny from './components/tiny.vue'
-// import quill from './components/quill.vue'
 import myQuill from './components/myQuill.vue'
 
 export default {
   name: 'App',
   components: {
-    // quill,
     myQuill,
-    // tiny
   },
 data() {    
     return {
@@ -30,7 +24,6 @@ data() {
     },
     getFocus(quill) {
       console.log(quill)
-      // console.log(quill.getBounds())
     }
   }
 }
