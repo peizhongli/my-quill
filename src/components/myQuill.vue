@@ -44,14 +44,25 @@ export default {
         },
         placeholder: '点击输入 ...'
       },
-      focusIndex: 0, // 当前聚焦位置
-      selectionText: '', // 当前选中文字
+      focusText: null,
+      // focusIndex: 0, // 当前聚焦位置
+      // selectionText: '', // 当前选中文字
     }
   },
   mounted() {
     // 初始化编辑器
     this._initEditor()
     // this.quill = new Quill(this.$refs.editor, this.options);
+
+    // 纯文本粘贴
+    // this.editor.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta) => {
+    //   delta.ops = delta.ops.map(op => {
+    //     return {
+    //       insert: op.insert
+    //     }
+    //   })
+    //   return delta
+    // })
   },
   methods: {
     _initEditor() {
@@ -86,7 +97,10 @@ export default {
           this.$emit('blur', this.quill)
         } else {
           this.$emit('focus', this.quill,range)
-          this.focusIndex = range.index
+          // 聚焦部分
+          this.focusText = range
+          // 选中文字
+          this.selectionText = ''
           if (range.length == 0) {
             console.log('User cursor is on', range.index);
             this.setTable()
@@ -100,7 +114,7 @@ export default {
       
     },
     setTable() {
-      let line = this.quill.getLine(this.focusIndex)[0]
+      let line = this.quill.getLine(this.focusText.index)[0]
       if(line.constructor.name=='TableCell') {
         console.log('showtablerwrap')
         this.$refs.toolbar.showTableWrap()

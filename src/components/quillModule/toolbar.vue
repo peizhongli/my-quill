@@ -28,8 +28,8 @@
       <div class="modal" v-show="modalShow" @click="hideModal">
 
       </div>
-      <link-dialog ref="link" @save="setLink($event)"/>
     </div>
+    <link-dialog ref="link" @save="setLink($event)"/>
     <table-wrap :visibile="tableWrapShow" ref="tableBtnGroup"/>
   </div>
 </template>
@@ -58,6 +58,9 @@ export default {
     },
     setLink(data) {
       console.log(data)
+      if(this.$parent.selectionText!==''){
+        this.$parent.quill.deleteText(this.$parent.focusText.index,this.$parent.focusText.length)
+      }
       this.$parent.quill.format('link', data, Quill.sources.USER);
     },
     changeToSource() {
@@ -67,8 +70,8 @@ export default {
     },
     showTableWrap() {
       this.tableWrapShow = true
-      let position = this.$parent.quill.getBounds(this.$parent.focusIndex)
-      console.log(this.$parent.quill.getBounds(this.$parent.focusIndex))
+      let position = this.$parent.quill.getBounds(this.$parent.focusText.index)
+      console.log(this.$parent.quill.getBounds(this.$parent.focusText.index))
       this.$refs.tableBtnGroup.$el.style.left = position.left + 'px'
       this.$refs.tableBtnGroup.$el.style.top = position.top + 'px'
       console.log(this.$refs.tableBtnGroup.$el.style.left)
@@ -91,42 +94,38 @@ export default {
     this.$nextTick(()=>{
       console.log(this)
       let quill = document.querySelector('.my-quill')
+      // 清空所有按钮的默认样式 svg
       let btnGroup = quill.querySelectorAll('#toolbar>button')
       btnGroup.forEach(i=>{
         i.innerHTML = '';
       })
+      
+      // 字体颜色和背景颜色按钮需要特殊处理
       let colorBtn = quill.querySelector('#toolbar .ql-color .ql-picker-label')
       let bgBtn = quill.querySelector('#toolbar .ql-background .ql-picker-label')
       colorBtn.innerHTML = `<span class="color-bar"></span>`
       bgBtn.innerHTML = ''
+      // 监听点击事件 
       quill.addEventListener("click", ()=>{
+        // 如果字体颜色按钮被设置了value 就显示对应颜色的颜色条
         if(colorBtn.dataset.value) {
           colorBtn.querySelector('.color-bar').style.background = colorBtn.dataset.value
         } else {
           colorBtn.querySelector('.color-bar').style.background = ''
         }
-      })
-      quill.addEventListener("click", ()=> {
+        // 如果背景颜色按钮被设置里value 就把按钮的背景颜色显示为对应的颜色
         if(bgBtn.dataset.value) {
           bgBtn.style.backgroundColor = bgBtn.dataset.value
-        }
-        else {
+        } else {
           bgBtn.style.backgroundColor = ''
         }
       })
-      
-      // toolbar.querySelector('.ql-image').innerHTML = '';
-
-      // this.$el.querySelector('.ql-table-insert-row').innerHTML = `—`
-      // this.$el.querySelector('.ql-table-insert-column').innerHTML = `|`
-      // this.$el.querySelector('.ql-table-delete-row').innerHTML = `-—`
-      // this.$el.querySelector('.ql-table-delete-column').innerHTML = `-|`
-      // this.$el.querySelector('.ql-table-delete').innerHTML = `x`
     })
     
   },
 }
 </script>
+
 <style lang="less" scoped>
 /deep/#toolbar {
   &>button , &>span {
