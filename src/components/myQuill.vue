@@ -35,6 +35,7 @@ export default {
     return {
       // 初始化编辑器后绑定到quill参数上
       quill: null,
+      content: '',
       options: {
         theme: 'snow',
         
@@ -48,8 +49,7 @@ export default {
         placeholder: '点击输入 ...'
       },
       focusText: null,
-      // focusIndex: 0, // 当前聚焦位置
-      selectionText: '', // 当前选中文字
+      selectionText: '', // 当前选中文字 range对象 包括index聚焦位置以及length选中长度
       contentLength: 0, // 内容长度
     }
   },
@@ -70,37 +70,34 @@ export default {
   },
   methods: {
     _initEditor() {
-      console.log(this.value)
-
       // 初始化编辑器 传入dom和option
       this.quill = new Quill(this.$refs.editor, this.options);
-
+      // 设置编辑器的内容 编辑器的内容需要接收delta对象
       let delta = this.quill.clipboard.convert({
           html: this.value
       })
-      // 编辑器的内容需要接收delta对象
       this.quill.setContents(delta)
+      this.setContentLength()
 
-      // 双向绑定
+      // 监听变化并把quill变化的内容绑定到content上
       this.quill.on('text-change', () => {
         const quill = this.quill
-        let text = this.quill.getText()
         let html = this.quill.root.innerHTML
         if (html === '<p><br></p>') {
           html = ''
           this.quill.setText(html)
         }
+        this.content = html;
         this.$emit('input', html)
-        this.$emit('change', {html,quill,text})
-        // 设置最大长度
-        this.contentLength = quill.getText().length
-        if(this.contentLength>10) {
-          quill.deleteText(10, 4)
+        this.$emit('change', {html,quill})
+        
+        if(this.focusText) {
+          // 判断是否触发表格
+          this.setTable()
         }
-        // 判断是否触发表格
-        this.setTable()
         
       })
+      // 监听聚焦事件
       this.quill.on('selection-change', range => {
         if (!range) {
           this.$emit('blur', this.quill)
@@ -122,6 +119,7 @@ export default {
       });
       
     },
+    // 判断是否显示表格的设置项
     setTable() {
       let line = this.quill.getLine(this.focusText.index)[0]
       if(line.constructor.name=='TableCell') {
@@ -130,52 +128,32 @@ export default {
       } else {
         this.$refs.toolbar.hideTableWrap()
       }
+    },
+    // 设置最大长度
+    setContentLength() {
+      this.contentLength = this.quill.getText().length
+      if(this.contentLength>3000) {
+        this.quill.deleteText(3000, 4)
+      }
     }
   },
   watch: {
-    // 监听外部值的传入，用于将值赋予编辑器
-    // value (val) {
-      
-    //   console.log(val)
-    //   // 如果编辑器没有初始化，则停止赋值
-    //   if (!this.quill) {
-    //     return
-    //   }
-
-    //   // 获取编辑器当前内容
-    //   let content = this.quill.root.innerHTML
-
-    //   // 外部传入了新值，而且与当前编辑器的内容不一致
-    //   if (val && val !== content) {
-    //     // 将外部传入的HTML内容转换成编辑器识别的delta对象
-    //     let delta = this.quill.clipboard.convert({
-    //       html: val
-    //     })
-
-    //     // 编辑器的内容需要接收delta对象
-    //     this.quill.setContents(delta)
-    //   }
-    // }
-    // value(newVal) {
-    //   let content =this.quill.root.innerHTML
-    //     if (this.quill) {
-    //         console.log('newVal',newVal)
-
-    //       if (newVal && newVal !== content) {
-    //         this.content = newVal
-    //         this.quill.clipboard.dangerouslyPasteHTML(this.focusIndex, newVal);
-    //         // this.quill.pasteHTML(newVal)
-    //       } else if(!newVal) {
-    //         this.quill.setText('')
-    //       }
-    //     }
-    //   },
+    //  监听父组件传递的value值，变化后更新富文本内容
+    value(newVal) {
+      if (this.quill) {
+          if (newVal && newVal !== this.content) {
+              this.content = newVal;
+              this.quill.clipboard.dangerouslyPasteHTML(newVal);
+          } else if(!newVal) {
+              this.quill.setText('');
+          }
+      }
+    }
   },
 }
 </script>
 <style lang="less" scoped>
-
-/deep/.ql-container {
+/deep/ .ql-container {
   border-top: 0;
   table {
     width: auto;

@@ -1,7 +1,8 @@
 <template>
   <div id="app">
     <myQuill v-model="content" @input="getContent($event)" @focus="getFocus($event)"/>
-    <p>{{content}}</p>
+    <p>当前内容{{content}}</p>
+    <button @click="content='hello world'">test</button>
   </div>
 </template>
 
@@ -15,7 +16,7 @@ export default {
   },
 data() {    
     return {
-      content: '',
+      content: '<h1>hello world</h1>',
     }
   },
   methods: {
