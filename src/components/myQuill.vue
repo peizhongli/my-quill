@@ -2,7 +2,7 @@
   <div class="my-quill">
     <toolbar ref="toolbar" />
     <div ref="editor"></div>
-    <p>当前字数：{{contentLength}}</p>
+    <p>当前字数：{{contentLength}}/3000</p>
   </div>
 </template>
 
@@ -11,10 +11,10 @@
 import Quill from 'quill'
 // 引入样式
 import 'quill/dist/quill.snow.css'
-import config from './quillModule/config2.js'
-import Link from './quillModule/link.js'
-import Video from './quillModule/video.js'
-import toolbar from './quillModule/toolbar.vue'
+import config from './config'
+import Link from './quillModule/link/'
+import Video from './quillModule/video'
+import toolbar from './config/toolbar.vue'
 
 let Size = Quill.import('attributors/style/size');
 Size.whitelist = ['12px', '14px', '16px', '18px'];
@@ -36,18 +36,7 @@ export default {
       // 初始化编辑器后绑定到quill参数上
       quill: null,
       content: '',
-      options: {
-        theme: 'snow',
-        
-        modules: {
-          toolbar: config,
-          table: true,
-          // clipboard: {
-          //     matchVisual: false
-          // },
-        },
-        placeholder: '点击输入 ...'
-      },
+      options: config,
       focusText: null,
       selectionText: '', // 当前选中文字 range对象 包括index聚焦位置以及length选中长度
       contentLength: 0, // 内容长度
@@ -56,17 +45,7 @@ export default {
   mounted() {
     // 初始化编辑器
     this._initEditor()
-    // this.quill = new Quill(this.$refs.editor, this.options);
-
-    // 纯文本粘贴
-    // this.quill.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta) => {
-    //   delta.ops = delta.ops.map(op => {
-    //     return {
-    //       insert: op.insert
-    //     }
-    //   })
-    //   return delta
-    // })
+    
   },
   methods: {
     _initEditor() {
@@ -93,7 +72,7 @@ export default {
         
         if(this.focusText) {
           // 判断是否触发表格
-          this.setTable()
+          this.setItemMenu()
         }
         
       })
@@ -109,7 +88,7 @@ export default {
           this.selectionText = ''
           if (range.length == 0) {
             console.log('User cursor is on', range.index);
-            this.setTable()
+            this.setItemMenu()
           } else {
             var text = this.quill.getText(range.index, range.length);
             this.selectionText = text
@@ -119,26 +98,52 @@ export default {
       });
       
     },
-    // 判断是否显示表格的设置项
-    setTable() {
-      let line = this.quill.getLine(this.focusText.index)[0]
-      if(line.constructor.name=='TableCell') {
-        console.log('showtablerwrap')
-        this.$refs.toolbar.showTableWrap()
-      } else {
-        this.$refs.toolbar.hideTableWrap()
-      }
+    // 判断设置项的小菜单是否显示
+    setItemMenu(){
+      let curFormat = this.quill.getFormat()
+      this.$refs.toolbar.setItem(curFormat)
+      
     },
+    
+    // // 判断当前焦点是否在超链接格式内
+    // setLink(obj) {
+    //   console.log(obj)
+    //   if(obj.link) {
+    //     console.log('showlinkwrap')
+    //     this.$refs.toolbar.showLinkWrap()
+    //   } else {
+    //     this.$refs.toolbar.hideLinkWrap()
+    //   }
+    // },
+    // // 判断当前焦点是否在表格格式内
+    // setTable(obj) {
+    //   if(obj.table) {
+    //     this.$refs.toolbar.showWrap()
+    //   } else {
+    //     this.$refs.toolbar.hideWrap()
+    //   }
+    // },
     // 设置最大长度
     setContentLength() {
       this.contentLength = this.quill.getText().length
       if(this.contentLength>3000) {
         this.quill.deleteText(3000, 4)
       }
+    },
+    // 纯文本粘贴
+    setTextClipboard() {
+      this.quill.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta) => {
+        delta.ops = delta.ops.map(op => {
+          return {
+            insert: op.insert
+          }
+        })
+        return delta
+      })
     }
   },
   watch: {
-    //  监听父组件传递的value值，变化后更新富文本内容
+    //  监听父组件传递的value值，变化后更新quill内容
     value(newVal) {
       if (this.quill) {
           if (newVal && newVal !== this.content) {

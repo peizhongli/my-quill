@@ -1,6 +1,6 @@
 import Quill from 'quill'
 let BlockEmbed = Quill.import('blots/embed');
-import Link from './link';
+import Link from './../link';
 
 const ATTRIBUTES = ['height', 'width'];
 
@@ -49,7 +49,6 @@ class Video extends BlockEmbed {
   }
 }
 Video.blotName = 'video';
-Video.className = 'ql-video';
 Video.tagName = 'IFRAME';
 
 

@@ -16,7 +16,7 @@ export default {
   },
 data() {    
     return {
-      content: '<h1>hello world</h1>',
+      content: '<p>hello world</p>',
     }
   },
   methods: {

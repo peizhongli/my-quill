@@ -1,7 +1,7 @@
 <template>
   <div class="toolbar-wrap">
     <div id="toolbar" slot="toolbar">
-      <button class="ql-bold" title="加粗" @click="clickTest"></button>
+      <button class="ql-bold" title="加粗"></button>
       <button class="ql-italic" title="斜体"></button>
       <button class="ql-underline" title="下划线"></button>
       <button class="ql-strike" title="删除线"></button>
@@ -17,82 +17,89 @@
       <button class="ql-script" value="super" title="上标"></button>
       <button class="ql-script" value="sub" title="下标"></button>
       <button class="ql-link" title="超链接" @click="showLink"></button>
-      <select class="ql-color" value="color" title="字体颜色" @click="insertImgClick($event)"></select>
+      <select class="ql-color" value="color" title="字体颜色"></select>
       <select class="ql-background" value="color" title="背景颜色"></select>
-      <button class="ql-image" title="图片" @click="insertImgClick($event)"></button>  <!-- 插入图片 -->
-      <button class="ql-video" title="视频" @click="insertImgClick($event)"></button>  <!-- 插入视频 -->
-      <button class="ql-source" title="源码模式" @click="changeToSource($event)">源码模式</button>  <!-- 插入视频 -->
+      <button class="ql-image" title="图片" @click="insertImage"></button>  <!-- 插入图片 -->
+      <button class="ql-video" title="视频" @click="insertVideo"></button>  <!-- 插入视频 -->
+      <button class="ql-source" title="源码模式" @click="showSource">源码模式</button>  <!-- 插入视频 -->
       <button class="ql-table" title="插入表格"></button>
-      
-
-      <div class="modal" v-show="modalShow" @click="hideModal">
-
-      </div>
     </div>
-    <link-dialog ref="link" @save="setLink($event)"/>
-    <table-wrap :visibile="tableWrapShow" ref="tableBtnGroup"/>
+    <modal ref="modal" @hide="hideSource"/>
+    <link-dialog ref="link" @save="insertLink($event)"/>
+    <table-wrap ref="table" :visibile="tableWrapShow" />
+    <link-wrap ref="link" :visibile="linkWrapShow" />
   </div>
 </template>
 <script>
 import Quill from 'quill'
-import tableWrap from './tableWrap'
-import linkDialog from './linkDialog'
+import modal from './../quillModule/modal/modal'
+import tableWrap from './../quillModule/table/tableWrap'
+import linkDialog from './../quillModule/link/linkDialog'
+import linkWrap from './../quillModule/link/linkWrap'
 export default {
-  components: {tableWrap,linkDialog},
+  components: {modal,tableWrap,linkDialog,linkWrap},
   data() {
     return {
       tableWrapShow: false,
-      modalShow: false,
+      linkWrapShow: false,
     }
   },
   methods: {
-    clickTest(e) {
-      console.log(e)
+    // 插入图片
+    insertImage() {
+      
     },
-    insertImgClick(e) {
-      console.log(e,this)
+    // 插入视频
+    insertVideo() {
+      
     },
-    fileInsert() {},
+    // 显示超链接对话框
     showLink() {
       this.$refs.link.show(this.$parent.selectionText)
     },
-    setLink(data) {
-      console.log(data)
+    // 插入超链接
+    insertLink(data) {
       if(this.$parent.selectionText!==''){
         this.$parent.quill.deleteText(this.$parent.focusText.index,this.$parent.focusText.length)
       }
       this.$parent.quill.format('link', data, Quill.sources.USER);
     },
-    changeToSource() {
-      this.modalShow = true;
+    // 显示源码
+    showSource() {
+      this.$refs.modal.showModal()
       let quill = this.$parent.quill.container.firstChild
       quill.innerText = quill.innerHTML.replace(/<br>/g,'');
     },
-    showTableWrap() {
-      this.tableWrapShow = true
+    setItem(curFormat) {
+      console.log('聚焦元素',curFormat)
+      let itemArr = ['table']
+      itemArr.forEach( name =>{
+        if(curFormat[name]) {
+          this.showWrap(name)
+        } else {
+          this.hideWrap(name)
+        }
+      })
+    },
+    // 显示对应模块的工具栏
+    showWrap(wrapName) {
+      let that = this
+      that[`${wrapName}WrapShow`] = true
       let position = this.$parent.quill.getBounds(this.$parent.focusText.index)
-      console.log(this.$parent.quill.getBounds(this.$parent.focusText.index))
-      this.$refs.tableBtnGroup.$el.style.left = position.left + 'px'
-      this.$refs.tableBtnGroup.$el.style.top = position.top + 'px'
-      console.log(this.$refs.tableBtnGroup.$el.style.left)
+      this.$refs[`${wrapName}`].$el.style.left = position.left + 'px'
+      this.$refs[`${wrapName}`].$el.style.top = position.top + 'px'
 
     },
-    hideTableWrap() {
-      this.tableWrapShow = false
+    // 隐藏对应模块的工具栏
+    hideWrap(wrapName) {
+      let that = this
+      that[`${wrapName}WrapShow`] = false
     },
-    showModal() {
-      this.modalShow = true;
-    },
-    hideModal() {
-      console.log('关闭源码模式')
-      this.modalShow = false;
+    hideSource() {
       let quill = this.$parent.quill.container.firstChild
       quill.innerHTML = quill.innerText.trim();
-    }
-  },
-  mounted() {
-    this.$nextTick(()=>{
-      console.log(this)
+    },
+    initBtnGroup() {
       let quill = document.querySelector('.my-quill')
       // 清空所有按钮的默认样式 svg
       let btnGroup = quill.querySelectorAll('#toolbar>button')
@@ -105,6 +112,7 @@ export default {
       let bgBtn = quill.querySelector('#toolbar .ql-background .ql-picker-label')
       colorBtn.innerHTML = `<span class="color-bar"></span>`
       bgBtn.innerHTML = ''
+
       // 监听点击事件 
       quill.addEventListener("click", ()=>{
         // 如果字体颜色按钮被设置了value 就显示对应颜色的颜色条
@@ -120,6 +128,11 @@ export default {
           bgBtn.style.backgroundColor = ''
         }
       })
+    }
+  },
+  mounted() {
+    this.$nextTick(()=>{
+      this.initBtnGroup()
     })
     
   },
@@ -233,18 +246,10 @@ export default {
       background-image: url(../../assets/icons/link_active.png);
     }
   }
-  .modal {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    background-color: rgba(0,0,0,.6);
-  }
+  
 }
 .toolbar-wrap {
   position: relative;
-  
 }
 
 </style>
