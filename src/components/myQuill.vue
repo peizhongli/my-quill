@@ -60,6 +60,7 @@ export default {
 
       // 监听变化并把quill变化的内容绑定到content上
       this.quill.on('text-change', () => {
+        console.log('内容改变',this.quill.root.innerHTML)
         const quill = this.quill
         let html = this.quill.root.innerHTML
         if (html === '<p><br></p>') {
@@ -104,25 +105,6 @@ export default {
       this.$refs.toolbar.setItem(curFormat)
       
     },
-    
-    // // 判断当前焦点是否在超链接格式内
-    // setLink(obj) {
-    //   console.log(obj)
-    //   if(obj.link) {
-    //     console.log('showlinkwrap')
-    //     this.$refs.toolbar.showLinkWrap()
-    //   } else {
-    //     this.$refs.toolbar.hideLinkWrap()
-    //   }
-    // },
-    // // 判断当前焦点是否在表格格式内
-    // setTable(obj) {
-    //   if(obj.table) {
-    //     this.$refs.toolbar.showWrap()
-    //   } else {
-    //     this.$refs.toolbar.hideWrap()
-    //   }
-    // },
     // 设置最大长度
     setContentLength() {
       this.contentLength = this.quill.getText().length

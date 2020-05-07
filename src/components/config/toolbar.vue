@@ -25,13 +25,13 @@
       <button class="ql-table" title="插入表格"></button>
     </div>
     <modal ref="modal" @hide="hideSource"/>
-    <link-dialog ref="link" @save="insertLink($event)"/>
+    <link-dialog ref="linkDialog" @save="insertLink($event)"/>
     <table-wrap ref="table" :visibile="tableWrapShow" />
     <link-wrap ref="link" :visibile="linkWrapShow" />
   </div>
 </template>
 <script>
-import Quill from 'quill'
+// import Quill from 'quill'
 import modal from './../quillModule/modal/modal'
 import tableWrap from './../quillModule/table/tableWrap'
 import linkDialog from './../quillModule/link/linkDialog'
@@ -55,24 +55,30 @@ export default {
     },
     // 显示超链接对话框
     showLink() {
-      this.$refs.link.show(this.$parent.selectionText)
+      this.$refs.linkDialog.show(this.$parent.selectionText)
     },
     // 插入超链接
     insertLink(data) {
-      if(this.$parent.selectionText!==''){
-        this.$parent.quill.deleteText(this.$parent.focusText.index,this.$parent.focusText.length)
+      console.log(data)
+      let range = this.$parent.focusText
+      let len = range.length
+      if(range.length > 0){
+        this.$parent.quill.deleteText(range.index,range.length)
+      } else {
+        len = data.body.length
       }
-      this.$parent.quill.format('link', data, Quill.sources.USER);
+      this.$parent.quill.insertText(range.index, data.body, 'link',  "user")
+      this.$parent.quill.setSelection(range.index,len,  "api")
+      this.$parent.quill.format('link', data.target, 'user');
+      if(range.length == 0) {
+        console.log('设置光标')
+        this.$parent.quill.setSelection(range.index + len, 0,  "api")
+      }
     },
-    // 显示源码
-    showSource() {
-      this.$refs.modal.showModal()
-      let quill = this.$parent.quill.container.firstChild
-      quill.innerText = quill.innerHTML.replace(/<br>/g,'');
-    },
+    // 获取是否需要显示工具条
     setItem(curFormat) {
       console.log('聚焦元素',curFormat)
-      let itemArr = ['table']
+      let itemArr = ['table','link']
       itemArr.forEach( name =>{
         if(curFormat[name]) {
           this.showWrap(name)
@@ -95,10 +101,18 @@ export default {
       let that = this
       that[`${wrapName}WrapShow`] = false
     },
+    // 显示源码
+    showSource() {
+      this.$refs.modal.showModal()
+      let quill = this.$parent.quill.container.firstChild
+      quill.innerText = quill.innerHTML.replace(/<br>/g,'');
+    },
+    // 关闭源码模式
     hideSource() {
       let quill = this.$parent.quill.container.firstChild
       quill.innerHTML = quill.innerText.trim();
     },
+    // 初始化工具栏所有按钮
     initBtnGroup() {
       let quill = document.querySelector('.my-quill')
       // 清空所有按钮的默认样式 svg

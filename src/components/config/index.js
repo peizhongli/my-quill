@@ -39,6 +39,14 @@ const config = {
                 'table': function () {
                     this.quill.getModule('table').insertTable(2, 2)
                 },
+                // 重置link
+                link(value) {
+                    console.log(value)
+                    // if (value === true) {
+                    //     value = prompt('Enter link URL:'); // eslint-disable-line no-alert
+                    // }
+                    // this.quill.format('link', value, "user");
+                },
                 
             },
         },
