@@ -89,12 +89,12 @@ export default {
           this.selectionText = ''
           if (range.length == 0) {
             console.log('User cursor is on', range.index);
-            this.setItemMenu()
           } else {
             var text = this.quill.getText(range.index, range.length);
             this.selectionText = text
             console.log('User has highlighted', text);
           }
+          this.setItemMenu()
         }
       });
       
@@ -103,7 +103,6 @@ export default {
     setItemMenu(){
       let curFormat = this.quill.getFormat()
       this.$refs.toolbar.setItem(curFormat)
-      
     },
     // 设置最大长度
     setContentLength() {

@@ -55,25 +55,12 @@ export default {
     },
     // 显示超链接对话框
     showLink() {
-      this.$refs.linkDialog.show(this.$parent.selectionText)
+      this.$refs.linkDialog.show()
     },
     // 插入超链接
     insertLink(data) {
       console.log(data)
-      let range = this.$parent.focusText
-      let len = range.length
-      if(range.length > 0){
-        this.$parent.quill.deleteText(range.index,range.length)
-      } else {
-        len = data.body.length
-      }
-      this.$parent.quill.insertText(range.index, data.body, 'link',  "user")
-      this.$parent.quill.setSelection(range.index,len,  "api")
-      this.$parent.quill.format('link', data.target, 'user');
-      if(range.length == 0) {
-        console.log('设置光标')
-        this.$parent.quill.setSelection(range.index + len, 0,  "api")
-      }
+      
     },
     // 获取是否需要显示工具条
     setItem(curFormat) {

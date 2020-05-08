@@ -16,7 +16,10 @@ class Link extends Inline {
   static formats(domNode) {
     console.log('格式化',domNode)
     
-    return domNode.getAttribute('href');
+    return {
+      href:domNode.getAttribute('href'),
+      inner:domNode.innerText
+    };
   }
 
   static sanitize(url) {
