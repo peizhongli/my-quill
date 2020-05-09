@@ -47,6 +47,10 @@ const config = {
                     // }
                     // this.quill.format('link', value, "user");
                 },
+                // 重置video
+                video() {
+                    console.log(this)
+                }
                 
             },
         },

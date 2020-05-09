@@ -25,7 +25,8 @@
       <button class="ql-table" title="插入表格"></button>
     </div>
     <modal ref="modal" @hide="hideSource"/>
-    <link-dialog ref="linkDialog" @save="insertLink($event)"/>
+    <video-dialog ref="videoDialog" />
+    <link-dialog ref="linkDialog" />
     <table-wrap ref="table" :visibile="tableWrapShow" />
     <link-wrap ref="link" :visibile="linkWrapShow" />
   </div>
@@ -35,9 +36,10 @@
 import modal from './../quillModule/modal/modal'
 import tableWrap from './../quillModule/table/tableWrap'
 import linkDialog from './../quillModule/link/linkDialog'
+import videoDialog from './../quillModule/video/videoDialog'
 import linkWrap from './../quillModule/link/linkWrap'
 export default {
-  components: {modal,tableWrap,linkDialog,linkWrap},
+  components: {modal,tableWrap,linkDialog,linkWrap,videoDialog},
   data() {
     return {
       tableWrapShow: false,
@@ -51,16 +53,11 @@ export default {
     },
     // 插入视频
     insertVideo() {
-      
+      this.$refs.videoDialog.show()
     },
     // 显示超链接对话框
     showLink() {
       this.$refs.linkDialog.show()
-    },
-    // 插入超链接
-    insertLink(data) {
-      console.log(data)
-      
     },
     // 获取是否需要显示工具条
     setItem(curFormat) {

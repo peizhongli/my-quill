@@ -13,7 +13,8 @@
   import 'quill/dist/quill.snow.css'
   import config from './config'
   import Link from './quillModule/link/'
-  import Video from './quillModule/video'
+  import Iframe from './quillModule/video/iframe.js'
+  import Video from './quillModule/video/video.js'
   import toolbar from './config/toolbar.vue'
   
   let Size = Quill.import('attributors/style/size');
@@ -21,6 +22,7 @@
   Quill.register(Size, true);
   Quill.register(Link, true)
   Quill.register(Video, true)
+  Quill.register(Iframe, true)
   
   export default {
     name: 'editor',

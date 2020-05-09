@@ -1,13 +1,15 @@
 import Quill from 'quill'
 let BlockEmbed = Quill.import('blots/embed');
-import Link from './../link';
+import Link from '../link';
 
 const ATTRIBUTES = ['height', 'width'];
 
-class Video extends BlockEmbed {
+class Iframe extends BlockEmbed {
   static create(value) {
+    if(value.indexOf('</iframe>')>-1) {
+      return new DOMParser().parseFromString(value,'text/html').body.childNodes[0]
+    }
     const node = super.create(value);
-    console.log(value)
     node.setAttribute('frameborder', '0');
     node.setAttribute('allowfullscreen', true);
     node.setAttribute('src', this.sanitize(value));
@@ -44,12 +46,12 @@ class Video extends BlockEmbed {
   }
 
   html() {
-    const { video } = this.value();
-    return `<a href="${video}">${video}</a>`;
+    const { iframe } = this.value();
+    return `<a href="${iframe}">${iframe}</a>`;
   }
 }
-Video.blotName = 'video';
-Video.tagName = 'IFRAME';
+Iframe.blotName = 'iframe';
+Iframe.tagName = 'IFRAME';
 
 
-export default Video;
+export default Iframe;

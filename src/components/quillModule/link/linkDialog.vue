@@ -11,7 +11,6 @@
       </el-form-item>
     </el-form>
   </el-dialog>
-  
 </template>
 <script>
 export default {
