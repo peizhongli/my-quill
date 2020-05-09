@@ -91,8 +91,7 @@ export default {
     // 显示源码
     showSource() {
       this.$refs.modal.showModal()
-      let quill = this.$parent.quill.container.firstChild
-      quill.innerText = quill.innerHTML.replace(/<br>/g,'');
+      
     },
     // 关闭源码模式
     hideSource() {

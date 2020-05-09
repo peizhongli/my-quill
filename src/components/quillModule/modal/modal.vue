@@ -15,10 +15,15 @@ export default {
     methods: {
         showModal() {
             this.modalShow = true;
+            let quill = this.$parent.$parent.quill.container.firstChild
+            console.log(quill.innerHTML)
+            quill.innerText = quill.innerHTML.replace(/<br>/g,'');
             this.$emit('show')
         },
         hideModal() {
             this.modalShow = false;
+            let quill = this.$parent.$parent.quill.container.firstChild
+            quill.innerHTML = quill.innerText.trim();
             this.$emit('hide')
         },
     }

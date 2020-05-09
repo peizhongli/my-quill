@@ -2,7 +2,7 @@
   <div id="app">
     <myQuill v-model="content" @input="getContent($event)" @focus="getFocus($event)"/>
     <p>当前内容{{content}}</p>
-    <button @click="content='hello world'">test</button>
+    <button @click="content='I \u2764\uFE0F emoji!'">test</button>
   </div>
 </template>
 
