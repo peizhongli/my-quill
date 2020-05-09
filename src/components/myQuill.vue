@@ -47,10 +47,13 @@
     mounted() {
       // 初始化编辑器
       this._initEditor()
-  
+      window.quill = this.quill
     },
     methods: {
       _initEditor() {
+        Quill.prototype.test = function() {
+          console.log(this)
+        }
         // 初始化编辑器 传入dom和option
         this.quill = new Quill(this.$refs.editor, this.options);
         // 设置编辑器的内容 编辑器的内容需要接收delta对象
