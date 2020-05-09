@@ -13,8 +13,8 @@
   import 'quill/dist/quill.snow.css'
   import config from './config'
   import Link from './quillModule/link/'
-  import Iframe from './quillModule/video/iframe.js'
-  import Video from './quillModule/video/video.js'
+  // import Iframe from './quillModule/video/iframe.js'
+  import Video from './quillModule/video/iframe.js'
   import toolbar from './config/toolbar.vue'
   
   let Size = Quill.import('attributors/style/size');
@@ -22,7 +22,7 @@
   Quill.register(Size, true);
   Quill.register(Link, true)
   Quill.register(Video, true)
-  Quill.register(Iframe, true)
+  // Quill.register(Iframe, true)
   
   export default {
     name: 'editor',
@@ -39,7 +39,7 @@
         quill: null,
         content: '',
         options: config,
-        focusText: null,
+        range: null,
         selectionText: '', // 当前选中文字 range对象 包括index聚焦位置以及length选中长度
         contentLength: 0, // 内容长度
       }
@@ -76,11 +76,11 @@
             quill
           })
   
-          if (this.focusText) {
+          if (this.range) {
             // 判断是否触发表格
             this.setItemMenu()
           }
-  
+          this.setContentLength()
         })
         // 监听聚焦事件
         this.quill.on('selection-change', range => {
@@ -89,7 +89,7 @@
           } else {
             this.$emit('focus', this.quill, range)
             // 聚焦部分
-            this.focusText = range
+            this.range = range
             // 选中文字
             this.selectionText = ''
             if (range.length == 0) {
@@ -107,11 +107,13 @@
       // 判断设置项的小菜单是否显示
       setItemMenu() {
         let curFormat = this.quill.getFormat()
+        let curContent = this.quill.getContents()
+        console.log(curContent)
         this.$refs.toolbar.setItem(curFormat)
       },
       // 设置最大长度
       setContentLength() {
-        this.contentLength = this.quill.getText().length
+        this.contentLength = this.quill.getText().length - 1
         if (this.contentLength > 3000) {
           this.quill.deleteText(3000, 4)
         }
@@ -133,9 +135,11 @@
       value(newVal) {
         if (this.quill) {
           if (newVal && newVal !== this.content) {
+            console.log(111)
             this.content = newVal;
             this.quill.clipboard.dangerouslyPasteHTML(newVal);
           } else if (!newVal) {
+            console.log('noNewValue55555')
             this.quill.setText('');
           }
         }

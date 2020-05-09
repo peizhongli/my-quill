@@ -25,11 +25,14 @@ export default {
   },
   methods: {
     show() {
-      this.form.inner = this.$parent.$parent.selectionText
-      let range = this.$parent.$parent.focusText
-      let containLink = this.$parent.$parent.quill.getContents(range.index,range.length).ops.find(i=>i.attributes&&i.attributes.link)
-      if(containLink) {
-        this.form.inner = this.$parent.$parent.selectionText
+      let parent = this.$parent.$parent // 父组件
+      let quill = parent.quill // quill组件
+      let range = parent.range  // 当前选择的内容
+      // 返回所选文字的内容——包含格式数据的Delta数据。
+      let ops = quill.getContents(range.index,range.length).ops
+      this.form.inner = parent.selectionText
+      if(ops.length==1&&ops[0].attributes&&ops[0].attributes.link) {
+        this.form.href = ops[0].attributes.link
       }
       this.visible = true
     },
@@ -43,19 +46,21 @@ export default {
         inner: this.form.inner,
         href: this.form.href,
       }
-      let range = this.$parent.$parent.focusText
-      let len = data.inner.length
+      let quill = this.$parent.$parent.quill // quill组件
+      let range = this.$parent.$parent.range  // 当前选择的内容
+      let insertLength = data.inner.length // 插入链接的文本部分的长度
+
       // 如果选中文字的话 先把这段文字删除 再插入a标签内的文本
       if(range.length > 0){
-        this.$parent.$parent.quill.deleteText(range.index,range.length)
+        quill.deleteText(range.index,range.length)
       }
-      this.$parent.$parent.quill.insertText(range.index, data.inner, 'link',  "user")
+      quill.insertText(range.index, data.inner, 'link',  "user")
       // 
-      this.$parent.$parent.quill.setSelection(range.index,len,  "api")
-      this.$parent.$parent.quill.format('link', data.href, 'user');
+      quill.setSelection(range.index,insertLength,  "api")
+      quill.format('link', data.href, 'user');
       if(range.length == 0) {
         console.log('设置光标')
-        this.$parent.$parent.quill.setSelection(range.index + len, 0,  "api")
+        quill.setSelection(range.index + insertLength, 0,  "api")
       }
       this.$emit('save',data)
       this.hide()

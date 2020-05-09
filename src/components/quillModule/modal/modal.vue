@@ -1,6 +1,7 @@
 <template>
-    <div class="modal" v-show="modalShow" @click="hideModal">
-        
+    <div>
+        <div class="modal" v-show="modalShow" @click="hideModal"></div>
+        <input type='hidden' v-model="content"/>
     </div>
 </template>
 <script>
@@ -9,7 +10,8 @@ export default {
     },
     data() {
         return {
-            modalShow: false
+            modalShow: false,
+            content: '',
         }
     },
     methods: {
@@ -18,12 +20,12 @@ export default {
             let quill = this.$parent.$parent.quill.container.firstChild
             console.log(quill.innerHTML)
             quill.innerText = quill.innerHTML.replace(/<br>/g,'');
+            this.content = quill.innerHTML.replace(/<br>/g,'');
             this.$emit('show')
         },
         hideModal() {
+            this.$parent.$parent.quill.clipboard.dangerouslyPasteHTML(this.content);
             this.modalShow = false;
-            let quill = this.$parent.$parent.quill.container.firstChild
-            quill.innerHTML = quill.innerText.trim();
             this.$emit('hide')
         },
     }

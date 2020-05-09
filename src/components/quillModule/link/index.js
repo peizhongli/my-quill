@@ -2,11 +2,8 @@ import Quill from 'quill'
 let Inline = Quill.import('blots/inline');
 
 class Link extends Inline {
-  static create(value,inner) {
-    console.log(value,inner)
+  static create(value) {
     let node = document.createElement('a')
-    // node.innerText = value.body
-    console.log(this.sanitize(value))
     node.setAttribute('href', this.sanitize(value));
     node.setAttribute('target', '_blank');
     return node;
@@ -16,10 +13,7 @@ class Link extends Inline {
   static formats(domNode) {
     console.log('格式化',domNode)
     
-    return {
-      href:domNode.getAttribute('href'),
-      inner:domNode.innerText
-    };
+    return domNode.getAttribute('href');
   }
 
   static sanitize(url) {
@@ -27,7 +21,6 @@ class Link extends Inline {
   }
 
   format(name, value) {
-    console.log('格式化',name,value,this.statics.blotName)
     if (name !== this.statics.blotName || !value) {
       super.format(name, value);
     } else {

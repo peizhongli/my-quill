@@ -1,57 +1,62 @@
 <template>
   <div id="app">
-    <myQuill v-model="content" @input="getContent($event)" @focus="getFocus($event)"/>
-    <p>当前内容{{content}}</p>
-    <button @click="content='I \u2764\uFE0F emoji!'">test</button>
+    <myQuill v-model="content" @input="getContent($event)" @focus="getFocus($event)" />
+    <p>当前内容：{{content}}</p>
+    <button @click="test">test</button>
   </div>
 </template>
 
 <script>
-import myQuill from './components/myQuill.vue'
-
-export default {
-  name: 'App',
-  components: {
-    myQuill,
-  },
-data() {    
-    return {
-      content: '<p>hello world</p>',
-    }
-  },
-  methods: {
-    getContent(content) {
-      console.log(content)
+  import myQuill from './components/myQuill.vue'
+  
+  export default {
+    name: 'App',
+    components: {
+      myQuill,
     },
-    getFocus(quill) {
-      console.log(quill)
+    data() {
+      return {
+        content: 'hello world<a href="http://33" target="_blank">22</a>hello world',
+        // content: '<img src="http://resource.robot3.xiqu.servicetest.lenovo/file/guo/1588242125244.png">'
+        // content: '<p>hello world</p>'
+      }
+    },
+    methods: {
+      getContent(content) {
+        console.log(content)
+      },
+      getFocus(quill) {
+        console.log(quill)
+      },
+      test() {
+        this.content = 'I \u2764\uFE0F emoji!'
+      }
     }
   }
-}
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+  #app {
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: #2c3e50;
+    margin-top: 60px;
+  }
 </style>
+
 <style lang="less">
-.el-dialog {
-  .el-dialog__header {
-    padding: 18px 0;
-    text-align: center;
-    border-bottom: 1px solid #dddfe6;
-    .el-dialog__title {
-      color: #676767;
+  .el-dialog {
+    .el-dialog__header {
+      padding: 18px 0;
+      text-align: center;
+      border-bottom: 1px solid #dddfe6;
+      .el-dialog__title {
+        color: #676767;
+      }
+    }
+    .el-dialog__body {
+      padding: 16px 30px;
     }
   }
-  .el-dialog__body {
-    padding: 16px 30px;
-  }
-}
-  
 </style>

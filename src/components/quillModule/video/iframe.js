@@ -4,7 +4,7 @@ import Link from '../link';
 
 const ATTRIBUTES = ['height', 'width'];
 
-class Iframe extends BlockEmbed {
+class Video extends BlockEmbed {
   static create(value) {
     if(value.indexOf('</iframe>')>-1) {
       return new DOMParser().parseFromString(value,'text/html').body.childNodes[0]
@@ -46,12 +46,12 @@ class Iframe extends BlockEmbed {
   }
 
   html() {
-    const { iframe } = this.value();
-    return `<a href="${iframe}">${iframe}</a>`;
+    const { video } = this.value();
+    return `<a href="${video}">${video}</a>`;
   }
 }
-Iframe.blotName = 'iframe';
-Iframe.tagName = 'IFRAME';
+Video.blotName = 'video';
+Video.tagName = 'IFRAME';
 
 
-export default Iframe;
+export default Video;

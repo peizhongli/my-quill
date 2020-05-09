@@ -27,19 +27,20 @@ export default {
       this.form.inner = ''
     },
     save() {
-      let range = this.$parent.$parent.focusText
+      let range = this.$parent.$parent.range
+      let quill = this.$parent.$parent.quill
       // 如果选中文字的话 先把这段文字删除 再插入a标签内的文本
       if(range.length > 0){
-        this.$parent.$parent.quill.deleteText(range.index,range.length)
+        quill.deleteText(range.index,range.length)
       }
-      let regVideo = /.mp4|.webm|.ogg/i
-      console.log('是否为视频格式',regVideo.test(this.form.href))
-      if(regVideo.test(this.form.href)) {
-        this.$parent.$parent.quill.insertEmbed(range.index, 'video', this.form.href);
-      } else {
-        this.$parent.$parent.quill.insertEmbed(range.index, 'iframe', this.form.href);
-
-      }
+    //   let regVideo = /.mp4|.webm|.ogg/i
+    //   console.log('是否为视频格式',regVideo.test(this.form.href))
+    //   if(regVideo.test(this.form.href)) {
+    //     quill.insertEmbed(range.index, 'video', this.form.href);
+    //   } else {
+        quill.insertEmbed(range.index, 'video', this.form.href);
+    //   }
+      quill.setSelection(range.index + 1,0,'user');
       this.$emit('save')
       this.hide()
     }

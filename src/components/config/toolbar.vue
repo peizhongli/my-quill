@@ -19,10 +19,11 @@
       <button class="ql-link" title="超链接" @click="showLink"></button>
       <select class="ql-color" value="color" title="字体颜色"></select>
       <select class="ql-background" value="color" title="背景颜色"></select>
-      <button class="ql-image" title="图片" @click="insertImage"></button>  <!-- 插入图片 -->
-      <button class="ql-video" title="视频" @click="insertVideo"></button>  <!-- 插入视频 -->
-      <button class="ql-source" title="源码模式" @click="showSource">源码模式</button>  <!-- 插入视频 -->
+      <button class="ql-image" title="图片" @click="insertImage"></button>
+      <button class="ql-video" title="视频" @click="insertVideo"></button>
+      <button class="ql-source" title="源码模式" @click="showSource"></button> 
       <button class="ql-table" title="插入表格"></button>
+      <button class="ql-point" title="插入锚点"></button>
     </div>
     <modal ref="modal" @hide="hideSource"/>
     <video-dialog ref="videoDialog" />
@@ -75,7 +76,7 @@ export default {
     showWrap(wrapName) {
       let that = this
       that[`${wrapName}WrapShow`] = true
-      let position = this.$parent.quill.getBounds(this.$parent.focusText.index)
+      let position = this.$parent.quill.getBounds(this.$parent.range.index)
       this.$refs[`${wrapName}`].$el.style.left = position.left + 'px'
       this.$refs[`${wrapName}`].$el.style.top = position.top + 'px'
 
@@ -241,6 +242,12 @@ export default {
     background-image: url(../../assets/icons/link.png);
     &.ql-active {
       background-image: url(../../assets/icons/link_active.png);
+    }
+  }
+  .ql-point {
+    background-image: url(../../assets/icons/point.png);
+    &.ql-active {
+      background-image: url(../../assets/icons/point_active.png);
     }
   }
   
