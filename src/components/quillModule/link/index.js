@@ -3,17 +3,25 @@ let Inline = Quill.import('blots/inline');
 
 class Link extends Inline {
   static create(value) {
+    console.log('static create link',value)
+
     let node = document.createElement('a')
-    node.setAttribute('href', this.sanitize(value));
+    if(value.href) {
+      value = value.href
+    } else {
+      value = this.sanitize(value)
+    }
+    node.setAttribute('href', value);
     node.setAttribute('target', '_blank');
     return node;
 
   }
 
   static formats(domNode) {
-    console.log('格式化',domNode)
-    
-    return domNode.getAttribute('href');
+    return {
+      href: domNode.getAttribute('href'),
+      inner: domNode.innerText
+    };
   }
 
   static sanitize(url) {

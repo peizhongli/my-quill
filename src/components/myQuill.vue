@@ -13,7 +13,6 @@
   import 'quill/dist/quill.snow.css'
   import config from './config'
   import Link from './quillModule/link/'
-  // import Iframe from './quillModule/video/iframe.js'
   import Video from './quillModule/video/iframe.js'
   import toolbar from './config/toolbar.vue'
   
@@ -51,9 +50,6 @@
     },
     methods: {
       _initEditor() {
-        Quill.prototype.test = function() {
-          console.log(this)
-        }
         // 初始化编辑器 传入dom和option
         this.quill = new Quill(this.$refs.editor, this.options);
         // 设置编辑器的内容 编辑器的内容需要接收delta对象
