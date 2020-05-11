@@ -13,6 +13,7 @@
   import 'quill/dist/quill.snow.css'
   import config from './config'
   import Link from './quillModule/link/'
+  import Ask from './quillModule/ask/'
   import Video from './quillModule/video/iframe.js'
   import toolbar from './config/toolbar.vue'
   
@@ -20,6 +21,7 @@
   Size.whitelist = ['12px', '14px', '16px', '18px'];
   Quill.register(Size, true);
   Quill.register(Link, true)
+  Quill.register(Ask, true)
   Quill.register(Video, true)
   // Quill.register(Iframe, true)
   
@@ -155,6 +157,10 @@
       td {
         min-width: 100px;
       }
+    }
+    ask {
+      color: #70ad47;
+      text-decoration: underline;
     }
   }
 </style>

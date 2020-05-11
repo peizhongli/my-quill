@@ -17,6 +17,7 @@
       <button class="ql-script" value="super" title="上标"></button>
       <button class="ql-script" value="sub" title="下标"></button>
       <button class="ql-link" title="超链接" @click="showLink"></button>
+      <button class="ql-ask" title="标准问" @click="showAsk"></button>
       <select class="ql-color" value="color" title="字体颜色"></select>
       <select class="ql-background" value="color" title="背景颜色"></select>
       <button class="ql-image" title="图片" @click="insertImage"></button>
@@ -28,23 +29,28 @@
     <modal ref="modal" @hide="hideSource"/>
     <video-dialog ref="videoDialog" />
     <link-dialog ref="linkDialog" />
+    <ask-dialog ref="askDialog" />
     <table-wrap ref="table" :visibile="tableWrapShow" />
     <link-wrap ref="link" :visibile="linkWrapShow" />
+    <ask-wrap ref="ask" :visibile="askWrapShow" />
   </div>
 </template>
 <script>
 // import Quill from 'quill'
 import modal from './../quillModule/modal/modal'
 import tableWrap from './../quillModule/table/tableWrap'
-import linkDialog from './../quillModule/link/linkDialog'
+import linkDialog from './../quillModule/link/linkWrap'
+import askDialog from './../quillModule/ask/askDialog'
 import videoDialog from './../quillModule/video/videoDialog'
 import linkWrap from './../quillModule/link/linkWrap'
+import askWrap from './../quillModule/ask/askWrap'
 export default {
-  components: {modal,tableWrap,linkDialog,linkWrap,videoDialog},
+  components: {modal,tableWrap,linkDialog,linkWrap,videoDialog,askWrap,askDialog},
   data() {
     return {
       tableWrapShow: false,
       linkWrapShow: false,
+      askWrapShow: false
     }
   },
   methods: {
@@ -57,29 +63,35 @@ export default {
       this.$refs.videoDialog.show()
     },
     // 显示超链接对话框
-    showLink() {
-      this.$refs.linkDialog.show()
+    showLink(type) {
+      this.$refs.linkDialog.show(type)
+    },
+    showAsk(type) {
+      this.$refs.askDialog.show(type)
     },
     // 获取是否需要显示工具条
     setItem(curFormat) {
       console.log('聚焦元素',curFormat)
-      let itemArr = ['table','link']
-      itemArr.forEach( name =>{
-        if(curFormat[name]) {
-          this.showWrap(name)
-        } else {
-          this.hideWrap(name)
-        }
-      })
+      let itemArr = ['table','link','ask']
+      window.setTimeout(()=>{
+        itemArr.forEach( name =>{
+          if(curFormat[name]) {
+            this.showWrap(name)
+          } else {
+            this.hideWrap(name)
+          }
+        })
+      },0)
     },
     // 显示对应模块的工具栏
     showWrap(wrapName) {
       let that = this
       that[`${wrapName}WrapShow`] = true
       let position = this.$parent.quill.getBounds(this.$parent.range.index)
-      this.$refs[`${wrapName}`].$el.style.left = position.left + 'px'
-      this.$refs[`${wrapName}`].$el.style.top = position.top + 'px'
-
+      let el = this.$refs[`${wrapName}`].$el
+      console.log(el.offsetHeight)
+      el.style.left = position.left + 'px'
+      el.style.top = position.top + 55 + 'px'
     },
     // 隐藏对应模块的工具栏
     hideWrap(wrapName) {
@@ -248,6 +260,12 @@ export default {
     background-image: url(../../assets/icons/point.png);
     &.ql-active {
       background-image: url(../../assets/icons/point_active.png);
+    }
+  }
+  .ql-ask {
+    background-image: url(../../assets/icons/ask.png);
+    &.ql-active {
+      background-image: url(../../assets/icons/ask_active.png);
     }
   }
   

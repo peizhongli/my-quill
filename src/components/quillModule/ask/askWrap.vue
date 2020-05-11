@@ -1,7 +1,7 @@
 <template>
-    <div class="link-wrap" v-show="visibile" v-clickOutside="hide">
+    <div class="ask-wrap" v-show="visibile" v-clickOutside="hide">
         <div>
-            调用超链接：<a :href="link" target="_blank">{{link}}</a>
+            调用标准问：<a href="javascript:void(0);">{{ask}}</a>
         </div>
         <section class="btn-group">
             <span @click="modify">修改</span>
@@ -21,12 +21,12 @@
         },
         data() {
             return {
-                link: ''
+                ask: ''
             }
         },
         methods: {
             modify() {
-                this.$parent.showLink('update')
+                this.$parent.showAsk('update')
             },
             clear() {
                 let quill = this.$parent.$parent.quill
@@ -37,9 +37,9 @@
                 }
             },
             hide() {
-                console.log('hide',this.$parent.linkWrapShow)
-                if(this.$parent.linkWrapShow) {
-                    this.$parent.linkWrapShow = false
+                console.log('hide',this.$parent.askWrapShow)
+                if(this.$parent.askWrapShow) {
+                    this.$parent.askWrapShow = false
                 }
             }
         },
@@ -51,10 +51,10 @@
                     // 返回所选文字的内容——包含格式数据的Delta数据。
                     let current = quill.getFormat()
                     // 如果选中的文字包含链接
-                    if (quill && current.link) {
-                        this.link = current.link.href
+                    if (quill && current.ask) {
+                        this.ask = current.ask.href
                     } else {
-                        this.link = ''
+                        this.ask = ''
                     }
                 }
             }
@@ -63,7 +63,7 @@
 </script>
 
 <style lang="less" scoped>
-    .link-wrap {
+    .ask-wrap {
         position: absolute;
         display: flex;
         justify-content: space-between;

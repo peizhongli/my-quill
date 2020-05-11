@@ -1,5 +1,5 @@
 <template>
-    <el-dialog :visible.sync="visible" title="设置视频" append-to-inner width="674px">
+    <el-dialog :visible.sync="visible" title="设置视频" append-to-inner width="674px" @closed="hide">
     <el-form :model="form">
       <el-form-item label="链接地址/视频代码：" required label-width="160px">
         <el-input v-model="form.href" autocomplete="off" class="small-input"></el-input>
@@ -24,7 +24,7 @@ export default {
     },
     hide() {
       this.visible = false
-      this.form.inner = ''
+      this.form.href = ''
     },
     save() {
       let range = this.$parent.$parent.range
