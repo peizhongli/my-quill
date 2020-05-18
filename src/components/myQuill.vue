@@ -107,10 +107,25 @@
       },
       // 判断设置项的小菜单是否显示
       setItemMenu() {
-        let curFormat = this.quill.getFormat()
-        let curContent = this.quill.getContents()
-        console.log(curContent)
+        let curFormat = this.setEndSpace()
+        
         this.$refs.toolbar.setItem(curFormat)
+      },
+      setEndSpace() {
+        let curFormat = this.quill.getFormat()
+        if(this.range.length==0&&this.range.index==this.quill.getText().length-1&&(curFormat.link||curFormat.ask)) {
+          let inner = curFormat[curFormat.link?'link':'ask'].inner
+          let content = this.quill.getContents(this.range.index - inner.length,inner.length).ops
+          if(content.length==1) {
+            this.quill.insertText(this.range.index," ","user")
+            this.quill.removeFormat(this.range.index, 1)
+            this.quill.setSelection(this.range.index+1,0)
+          }
+          curFormat = this.quill.getFormat()
+          return curFormat
+        } else {
+          return curFormat
+        }
       },
       // 设置最大长度
       setContentLength() {
@@ -136,11 +151,9 @@
       value(newVal) {
         if (this.quill) {
           if (newVal && newVal !== this.content) {
-            console.log(111)
             this.content = newVal;
             this.quill.clipboard.dangerouslyPasteHTML(newVal);
           } else if (!newVal) {
-            console.log('noNewValue55555')
             this.quill.setText('');
           }
         }

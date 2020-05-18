@@ -3,8 +3,6 @@ let Inline = Quill.import('blots/inline');
 
 class Link extends Inline {
   static create(value) {
-    console.log('static create link',value)
-
     let node = document.createElement('a')
     if(value.href) {
       value = value.href

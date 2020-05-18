@@ -7,7 +7,6 @@
             <span @click="modify">修改</span>
             <span @click="clear">清除</span>
         </section>
-    
     </div>
 </template>
 
@@ -26,7 +25,7 @@
         },
         methods: {
             modify() {
-                this.$parent.showLink('update')
+                this.$parent.showLink()
             },
             clear() {
                 let quill = this.$parent.$parent.quill
@@ -37,7 +36,6 @@
                 }
             },
             hide() {
-                console.log('hide',this.$parent.linkWrapShow)
                 if(this.$parent.linkWrapShow) {
                     this.$parent.linkWrapShow = false
                 }

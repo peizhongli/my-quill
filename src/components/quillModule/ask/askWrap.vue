@@ -26,7 +26,7 @@
         },
         methods: {
             modify() {
-                this.$parent.showAsk('update')
+                this.$parent.showAsk()
             },
             clear() {
                 let quill = this.$parent.$parent.quill
@@ -37,7 +37,6 @@
                 }
             },
             hide() {
-                console.log('hide',this.$parent.askWrapShow)
                 if(this.$parent.askWrapShow) {
                     this.$parent.askWrapShow = false
                 }

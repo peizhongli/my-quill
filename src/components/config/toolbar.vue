@@ -16,8 +16,8 @@
       <button class="ql-list" value="bullet" title="无序列表"></button>
       <button class="ql-script" value="super" title="上标"></button>
       <button class="ql-script" value="sub" title="下标"></button>
-      <button class="ql-link" title="超链接" @click="showLink"></button>
-      <button class="ql-ask" title="标准问" @click="showAsk"></button>
+      <button class="ql-link" title="插入超链接" @click="showLink"></button>
+      <button class="ql-ask" title="插入标准问" @click="showAsk"></button>
       <select class="ql-color" value="color" title="字体颜色"></select>
       <select class="ql-background" value="color" title="背景颜色"></select>
       <button class="ql-image" title="图片" @click="insertImage"></button>
@@ -39,7 +39,7 @@
 // import Quill from 'quill'
 import modal from './../quillModule/modal/modal'
 import tableWrap from './../quillModule/table/tableWrap'
-import linkDialog from './../quillModule/link/linkWrap'
+import linkDialog from './../quillModule/link/linkDialog'
 import askDialog from './../quillModule/ask/askDialog'
 import videoDialog from './../quillModule/video/videoDialog'
 import linkWrap from './../quillModule/link/linkWrap'
@@ -63,8 +63,8 @@ export default {
       this.$refs.videoDialog.show()
     },
     // 显示超链接对话框
-    showLink(type) {
-      this.$refs.linkDialog.show(type)
+    showLink() {
+      this.$refs.linkDialog.show()
     },
     showAsk(type) {
       this.$refs.askDialog.show(type)
@@ -76,8 +76,10 @@ export default {
       window.setTimeout(()=>{
         itemArr.forEach( name =>{
           if(curFormat[name]) {
+            console.log('yes',name)
             this.showWrap(name)
           } else {
+            console.log('no',name)
             this.hideWrap(name)
           }
         })
@@ -89,7 +91,6 @@ export default {
       that[`${wrapName}WrapShow`] = true
       let position = this.$parent.quill.getBounds(this.$parent.range.index)
       let el = this.$refs[`${wrapName}`].$el
-      console.log(el.offsetHeight)
       el.style.left = position.left + 'px'
       el.style.top = position.top + 55 + 'px'
     },

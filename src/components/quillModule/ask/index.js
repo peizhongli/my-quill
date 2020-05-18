@@ -3,7 +3,6 @@ let Inline = Quill.import('blots/inline');
 
 class Ask extends Inline {
   static create(value) {
-    console.log('static create link',value)
 
     let node = document.createElement('ask')
     if(value.value) {
