@@ -100,6 +100,7 @@
               this.selectionText = text
               console.log('User has highlighted', text);
             }
+            this.setSpace()
             this.setItemMenu()
           }
         });
@@ -108,24 +109,27 @@
       // 判断设置项的小菜单是否显示
       setItemMenu() {
         let curFormat = this.quill.getFormat()
-        
         this.$refs.toolbar.setItem(curFormat)
       },
-      setEndSpace() {
+      // 需要插入空格或移动光标的内容
+      setSpace() {
         let curFormat = this.quill.getFormat()
-        let textLength = this.quill.getText().length-1
-        if(this.range.length==0&&this.range.index==textLength&&(curFormat.link||curFormat.ask)) {
-          let inner = curFormat[curFormat.link?'link':'ask'].inner
+        if(this.range.length==0&&curFormat.ask) {
+          let inner = curFormat.ask.inner
           let content = this.quill.getContents(this.range.index - inner.length,inner.length).ops
           if(content.length==1) {
-            this.quill.insertText(this.range.index," ","user")
-            this.quill.removeFormat(this.range.index, 1)
-            this.quill.setSelection(this.range.index+1,0)
+            this.setEndSpace()
           }
-          curFormat = this.quill.getFormat()
-          return curFormat
+        }
+      },
+      setEndSpace() {
+        let after = this.quill.getText(this.range.index,1)
+        if(after===' ') {
+          this.quill.setSelection(this.range.index + 1,0)
         } else {
-          return curFormat
+          this.quill.insertText(this.range.index," ","user")
+          this.quill.removeFormat(this.range.index, 1)
+          this.quill.setSelection(this.range.index + 1,0)
         }
       },
       // 设置最大长度
@@ -176,5 +180,6 @@
       color: #70ad47;
       text-decoration: underline;
     }
+    
   }
 </style>

@@ -1,7 +1,7 @@
 <template>
     <div class="ask-wrap" v-show="visibile" v-clickOutside="hide">
         <div>
-            调用标准问：<a href="javascript:void(0);">{{ask}}</a>
+            调用标准问：<span class="ask">{{ask}}</span>
         </div>
         <section class="btn-group">
             <span @click="modify">修改</span>
@@ -51,7 +51,7 @@
                     let current = quill.getFormat()
                     // 如果选中的文字包含链接
                     if (quill && current.ask) {
-                        this.ask = current.ask.href
+                        this.ask = current.ask.value
                     } else {
                         this.ask = ''
                     }
@@ -95,6 +95,10 @@
                     text-decoration: underline;
                 }
             }
+        }
+        .ask {
+            color: #70ad47;
+            text-decoration: underline;
         }
     }
 </style>
