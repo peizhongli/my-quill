@@ -16,7 +16,7 @@
     },
     data() {
       return {
-        content: '<p>hello world<a href="http://33" target="_blank">22</a>hello <a href="http://555" target="_blank">world</a><ask value="333">222</ask> </p>',
+        content: '<p>hello world<ask value="333">22</ask>hello <a href="http://555" target="_blank">world</a><ask value="333">222</ask><a href="http://555" target="_blank">world</a></p>',
         // content: '<img src="http://resource.robot3.xiqu.servicetest.lenovo/file/guo/1588242125244.png">'
         // content: '<p>hello world</p>'
       }

@@ -107,13 +107,14 @@
       },
       // 判断设置项的小菜单是否显示
       setItemMenu() {
-        let curFormat = this.setEndSpace()
+        let curFormat = this.quill.getFormat()
         
         this.$refs.toolbar.setItem(curFormat)
       },
       setEndSpace() {
         let curFormat = this.quill.getFormat()
-        if(this.range.length==0&&this.range.index==this.quill.getText().length-1&&(curFormat.link||curFormat.ask)) {
+        let textLength = this.quill.getText().length-1
+        if(this.range.length==0&&this.range.index==textLength&&(curFormat.link||curFormat.ask)) {
           let inner = curFormat[curFormat.link?'link':'ask'].inner
           let content = this.quill.getContents(this.range.index - inner.length,inner.length).ops
           if(content.length==1) {
