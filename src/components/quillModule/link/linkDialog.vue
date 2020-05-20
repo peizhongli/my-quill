@@ -70,7 +70,7 @@ export default {
       let quill = parent.quill // quill组件
       let range = {
           index: parent.range.index,
-          length: 0
+          length: parent.range.length
         }  // 当前选择的内容
       let insertLength = data.inner.length // 插入链接的文本部分的长度
       // 获取当前内容是否只包含超链接
@@ -89,11 +89,12 @@ export default {
         quill.deleteText(range.index,range.length)
       }
       // 插入link格式的文本
-      quill.insertText(range.index, data.inner,'link', data.href,  "user")
+      quill.insertText(range.index, data.inner,"user")
+      quill.removeFormat(range.index, insertLength, "api")
       // // 把插入的文本选中
-      // quill.setSelection(range.index,insertLength,  "api")
+      quill.setSelection(range.index, insertLength , "user")
       // // 将这段文本设置为link格式 传入href
-      // quill.format('link', data.href, 'user');
+      quill.format('link', data.href, 'user');
       // // 如果没选中文字 把光标放到插入链接后的位置
       // if(range.length == 0) {
       //   console.log('设置光标')

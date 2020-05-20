@@ -24,12 +24,13 @@
       <button class="ql-video" title="视频" @click="insertVideo"></button>
       <button class="ql-source" title="源码模式" @click="showSource"></button> 
       <button class="ql-table" title="插入表格"></button>
-      <button class="ql-point" title="插入锚点"></button>
+      <button class="ql-point" title="插入锚点" @click="showPoint"></button>
     </div>
     <modal ref="modal" @hide="hideSource"/>
     <video-dialog ref="videoDialog" />
     <link-dialog ref="linkDialog" />
     <ask-dialog ref="askDialog" />
+    <point-dialog ref="pointDialog" />
     <table-wrap ref="table" :visibile="tableWrapShow" />
     <link-wrap ref="link" :visibile="linkWrapShow" />
     <ask-wrap ref="ask" :visibile="askWrapShow" />
@@ -42,10 +43,11 @@ import tableWrap from './../quillModule/table/tableWrap'
 import linkDialog from './../quillModule/link/linkDialog'
 import askDialog from './../quillModule/ask/askDialog'
 import videoDialog from './../quillModule/video/videoDialog'
+import pointDialog from './../quillModule/point/pointDialog'
 import linkWrap from './../quillModule/link/linkWrap'
 import askWrap from './../quillModule/ask/askWrap'
 export default {
-  components: {modal,tableWrap,linkDialog,linkWrap,videoDialog,askWrap,askDialog},
+  components: {modal,tableWrap,linkDialog,linkWrap,videoDialog,askWrap,askDialog,pointDialog},
   data() {
     return {
       tableWrapShow: false,
@@ -66,20 +68,20 @@ export default {
     showLink() {
       this.$refs.linkDialog.show()
     },
-    showAsk(type) {
-      this.$refs.askDialog.show(type)
+    showAsk() {
+      this.$refs.askDialog.show()
+    },
+    showPoint() {
+      this.$refs.pointDialog.show()
     },
     // 获取是否需要显示工具条
     setItem(curFormat) {
-      console.log('聚焦元素',curFormat)
       let itemArr = ['table','link','ask']
       window.setTimeout(()=>{
         itemArr.forEach( name =>{
           if(curFormat[name]) {
-            console.log('yes',name)
             this.showWrap(name)
           } else {
-            console.log('no',name)
             this.hideWrap(name)
           }
         })

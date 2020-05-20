@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <myQuill v-model="content" @input="getContent($event)" @focus="getFocus($event)" />
+    <myQuill v-model="content" @input="getContent($event)" @change="getContent($event)" @focus="getFocus($event)" />
     <p>当前内容：{{content}}</p>
     <button @click="test">test</button>
   </div>

@@ -55,6 +55,9 @@ const config = {
             },
         },
         table: true,
+        counter: {
+            maxLength: 3000
+        }
         // clipboard: {
         //     matchVisual: false
         // },

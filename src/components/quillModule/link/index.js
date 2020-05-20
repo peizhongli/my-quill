@@ -10,7 +10,9 @@ class Link extends Inline {
       value = this.sanitize(value)
     }
     node.setAttribute('href', value);
-    node.setAttribute('target', '_blank');
+    if(value.indexOf('#')!==0) {
+      node.setAttribute('target', '_blank');
+    }
     return node;
 
   }
@@ -37,7 +39,7 @@ class Link extends Inline {
 Link.blotName = 'link';
 Link.tagName = 'A';
 Link.SANITIZED_URL = 'about:blank';
-Link.PROTOCOL_WHITELIST = ['http', 'https', 'mailto', 'tel'];
+Link.PROTOCOL_WHITELIST = ['http', 'https', 'mailto', 'tel', '#'];
 
 function sanitize(url, protocols) {
   // const anchor = document.createElement('a');
