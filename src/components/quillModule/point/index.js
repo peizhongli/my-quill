@@ -3,7 +3,7 @@ let Inline = Quill.import('blots/inline');
 
 class Point extends Inline {
   static create(value) {
-    let node = document.createElement('target')
+    let node = document.createElement('point')
     if(value.value) {
         value = value.value
     }

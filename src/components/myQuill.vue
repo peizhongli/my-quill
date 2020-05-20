@@ -81,12 +81,12 @@ export default {
           html,
           quill
         });
-
-        if (this.range) {
+        this.$nextTick(()=>{
+          this.range = quill.selection.lastRange;
           // 判断是否触发表格
           this.setItemMenu();
-        }
-        this.setContentLength();
+          this.setContentLength();
+        })
       });
       // 监听聚焦事件
       this.quill.on("selection-change", range => {
@@ -112,17 +112,18 @@ export default {
     },
     // 判断设置项的小菜单是否显示
     setItemMenu() {
-      this.$nextTick(()=>{
         let curFormat = this.quill.getFormat();
         this.$refs.toolbar.setItem(curFormat);
-      })
       
     },
     // 需要插入空格或移动光标的内容
     setSpace() {
       let curFormat = this.quill.getFormat();
-      if (this.range.length == 0 && curFormat.ask) {
-        let inner = curFormat.ask.inner;
+      let list = ['ask','point']
+      let flag = Object.keys(curFormat).find(i=>list.indexOf(i)>-1)
+      
+      if (this.range.length == 0 && flag) {
+        let inner = curFormat[flag].inner;
         let content = this.quill.getContents(
           this.range.index - inner.length,
           inner.length
