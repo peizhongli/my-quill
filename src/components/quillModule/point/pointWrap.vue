@@ -1,8 +1,7 @@
 <template>
-    <div class="ask-wrap" v-show="visibile" v-clickOutside="hide">
-        
-        <span class="title">调用标准问：</span>
-        <span class="ask">{{ask}}</span>
+    <div class="point-wrap" v-show="visibile" v-clickOutside="hide">
+        <span class="title">锚点内容：</span>
+        <span class="point">{{point}}</span>
         <span class="btn" @click="modify">修改</span>
         <span class="btn" @click="clear">清除</span>
     </div>
@@ -18,12 +17,12 @@
         },
         data() {
             return {
-                ask: ''
+                point: ''
             }
         },
         methods: {
             modify() {
-                this.$parent.showAsk()
+                this.$parent.showPoint()
             },
             clear() {
                 let quill = this.$parent.$parent.quill
@@ -34,8 +33,8 @@
                 }
             },
             hide() {
-                if(this.$parent.askWrapShow) {
-                    this.$parent.askWrapShow = false
+                if(this.$parent.pointWrapShow) {
+                    this.$parent.pointWrapShow = false
                 }
             }
         },
@@ -47,10 +46,10 @@
                     // 返回所选文字的内容——包含格式数据的Delta数据。
                     let current = quill.getFormat()
                     // 如果选中的文字包含链接
-                    if (quill && current.ask) {
-                        this.ask = current.ask.value
+                    if (quill && current.point) {
+                        this.point = current.point.value
                     } else {
-                        this.ask = ''
+                        this.point = ''
                     }
                 }
             }
@@ -59,7 +58,7 @@
 </script>
 
 <style lang="less" scoped>
-.ask-wrap {
+.point-wrap {
         position: absolute;
         display: flex;
         align-items: center;
@@ -77,9 +76,7 @@
         span {
             flex: 0 0;
             white-space: nowrap;
-            &.ask {
-                color: #70ad47;
-                text-decoration: underline;
+            &.point {
                 flex: 1;
                 white-space: nowrap;
                 overflow: hidden;

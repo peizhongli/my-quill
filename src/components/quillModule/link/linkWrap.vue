@@ -1,12 +1,9 @@
 <template>
     <div class="link-wrap" v-show="visibile" v-clickOutside="hide">
-        <div>
-            调用超链接：<a :href="link" target="_blank">{{link}}</a>
-        </div>
-        <section class="btn-group">
-            <span @click="modify">修改</span>
-            <span @click="clear">清除</span>
-        </section>
+        <span class="title">调用超链接：</span>
+        <a :href="link" target="_blank">{{link}}</a>
+        <span class="btn" @click="modify">修改</span>
+        <span class="btn" @click="clear">清除</span>
     </div>
 </template>
 
@@ -64,29 +61,28 @@
     .link-wrap {
         position: absolute;
         display: flex;
-        justify-content: space-between;
+        align-items: center;
         box-sizing: border-box;
         padding: 14px 20px;
-        width: 573px;
+        max-width: 573px;
+        width: 80%;
         height: 45px;
-        line-height: 18px;
         font-size: 13px;
         background-color: #f4f4f5;
         border: 1px solid #dddfe6;
         border-radius: 3px;
         z-index: 99;
         a {
-            max-width: 345px;
-            display: inline-block;
-            vertical-align: bottom;
+            flex: 1;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             color: #0486FE;
         }
-        .btn-group {
-            flex-shrink: 0;
-            span {
+        span {
+            flex: 0 0;
+            white-space: nowrap;
+            &.btn{
                 margin-left: 22px;
                 color: #0486FE;
                 cursor: pointer;
