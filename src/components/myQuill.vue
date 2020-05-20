@@ -192,5 +192,20 @@ export default {
     color: #70ad47;
     text-decoration: underline;
   }
+  point {
+    position: relative;
+    opacity: .6;
+    &::before {
+      content: '';
+      display: block;
+      width: 10px;
+      height: 10px;
+      position: absolute;
+      left: -5px;
+      top: -5px;
+      background: url(../assets/icons/point.png) no-repeat;
+      background-size: 10px 10px;
+    }
+  }
 }
 </style>
