@@ -50,6 +50,12 @@ const config = {
                 // 重置video
                 video() {
                     console.log(this)
+                },
+                ask() {
+                    console.log(this)
+                },
+                point() {
+                    console.log(this)
                 }
                 
             },

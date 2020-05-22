@@ -3,7 +3,7 @@
     <toolbar ref="toolbar" />
     <div ref="editor"></div>
 
-    <p id="counter"></p>
+    <p id="counter" v-if="customOptions.counter"></p>
   </div>
 </template>
 
@@ -27,9 +27,8 @@ Quill.register(Link, true);
 Quill.register(Ask, true);
 Quill.register(Point, true);
 Quill.register(Video, true);
-Quill.register('modules/counter', Counter);
-console.log(Counter)
-
+Quill.register("modules/counter", Counter);
+console.log(config)
 export default {
   name: "editor",
   components: {
@@ -37,7 +36,37 @@ export default {
   },
   // 双向绑定
   props: {
-    value: String
+    value: {
+      type: String,
+      default: ""
+    },
+    customOptions: {
+      type: Object,
+      default: () => {
+        return {
+          placeholder: "请输入内容...", // 占位符
+          counter: 4000, // 最大长度
+          // 工具栏按钮
+          bold: true, // 加粗
+          italic: true, // 斜体
+          underline: true, // 下划线
+          strike: true, // 删除线
+          ol: true, // 有序列表
+          ul: true, // 无序列表
+          super: true, // 上标
+          sub: true, // 下标
+          link: true, // 插入超链接
+          ask: true, // 插入标准问
+          color: true, // 字体颜色
+          background: true, // 背景颜色
+          image: true, // 上传图片
+          video: true, // 上传视频
+          source: true, // 源码
+          table: true, // 插入表格
+          point: true // 插入锚点
+        };
+      }
+    }
   },
   data() {
     return {
@@ -54,9 +83,13 @@ export default {
     // 初始化编辑器
     this._initEditor();
     window.quill = this.quill;
+    
   },
   methods: {
     _initEditor() {
+      this.options.modules.counter = this.customOptions.counter
+      this.options.modules.table = this.customOptions.table
+      this.options.placeholder = this.customOptions.placeholder
       // 初始化编辑器 传入dom和option
       this.quill = new Quill(this.$refs.editor, this.options);
       // 设置编辑器的内容 编辑器的内容需要接收delta对象
@@ -81,12 +114,12 @@ export default {
           html,
           quill
         });
-        this.$nextTick(()=>{
+        this.$nextTick(() => {
           this.range = quill.selection.lastRange;
           // 判断是否触发表格
           this.setItemMenu();
           this.setContentLength();
-        })
+        });
       });
       // 监听聚焦事件
       this.quill.on("selection-change", range => {
@@ -105,23 +138,22 @@ export default {
             this.selectionText = text;
             console.log("User has highlighted", text);
           }
-          this.setSpace();
+          // this.setSpace();
           this.setItemMenu();
         }
       });
     },
     // 判断设置项的小菜单是否显示
     setItemMenu() {
-        let curFormat = this.quill.getFormat();
-        this.$refs.toolbar.setItem(curFormat);
-      
+      let curFormat = this.quill.getFormat();
+      this.$refs.toolbar.setItem(curFormat);
     },
     // 需要插入空格或移动光标的内容
     setSpace() {
       let curFormat = this.quill.getFormat();
-      let list = ['ask','point']
-      let flag = Object.keys(curFormat).find(i=>list.indexOf(i)>-1)
-      
+      let list = ["ask", "point"];
+      let flag = Object.keys(curFormat).find(i => list.indexOf(i) > -1);
+
       if (this.range.length == 0 && flag) {
         let inner = curFormat[flag].inner;
         let content = this.quill.getContents(
@@ -182,6 +214,9 @@ export default {
 <style lang="less" scoped>
 /deep/ .ql-container {
   border-top: 0;
+  .ql-editor {
+    padding: 10px;
+  }
   table {
     width: auto;
     td {
@@ -194,9 +229,9 @@ export default {
   }
   point {
     position: relative;
-    opacity: .6;
+    opacity: 0.6;
     &::before {
-      content: '';
+      content: "";
       display: block;
       width: 10px;
       height: 10px;

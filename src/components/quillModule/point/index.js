@@ -1,5 +1,6 @@
 import Quill from 'quill'
 let Inline = Quill.import('blots/inline');
+Inline.order.push('point')
 
 class Point extends Inline {
   static create(value) {

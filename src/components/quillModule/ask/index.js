@@ -1,6 +1,7 @@
 import Quill from 'quill'
 let Inline = Quill.import('blots/inline');
-
+Inline.order.push('ask')
+console.log(1111,Inline)
 class Ask extends Inline {
   static create(value) {
 

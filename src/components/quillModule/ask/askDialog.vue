@@ -64,6 +64,7 @@ export default {
       this.askRange.length = 0
     },
     save() {
+      console.log(11111)
       let data = {
         inner: this.form.inner,
         value: this.form.value,

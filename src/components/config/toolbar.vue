@@ -1,10 +1,10 @@
 <template>
   <div class="toolbar-wrap">
     <div id="toolbar" slot="toolbar">
-      <button class="ql-bold" title="加粗"></button>
-      <button class="ql-italic" title="斜体"></button>
-      <button class="ql-underline" title="下划线"></button>
-      <button class="ql-strike" title="删除线"></button>
+      <button class="ql-bold" title="加粗" v-if="$parent.customOptions.bold"></button>
+      <button class="ql-italic" title="斜体" v-if="$parent.customOptions.bold"></button>
+      <button class="ql-underline" title="下划线" v-if="$parent.customOptions.underline"></button>
+      <button class="ql-strike" title="删除线" v-if="$parent.customOptions.strike"></button>
       <!-- <select class="ql-size" title="字体大小">
           <option value="12px">12px</option>
           <option selected></option>
@@ -12,29 +12,35 @@
           <option value="16px">16px</option>
           <option value="18px">18px</option>
       </select>-->
-      <button class="ql-list" value="ordered" title="有序列表"></button>
-      <button class="ql-list" value="bullet" title="无序列表"></button>
-      <button class="ql-script" value="super" title="上标"></button>
-      <button class="ql-script" value="sub" title="下标"></button>
-      <button class="ql-link" title="插入超链接" @click="showLink"></button>
-      <button class="ql-ask" title="插入标准问" @click="showAsk"></button>
-      <select class="ql-color" value="color" title="字体颜色"></select>
-      <select class="ql-background" value="color" title="背景颜色"></select>
-      <button class="ql-image" title="图片" @click="insertImage"></button>
-      <button class="ql-video" title="视频" @click="insertVideo"></button>
-      <button class="ql-source" title="源码模式" @click="showSource"></button>
-      <button class="ql-table" title="插入表格"></button>
-      <button class="ql-point" title="插入锚点" @click="showPoint"></button>
+      <button class="ql-list" value="ordered" title="有序列表" v-if="$parent.customOptions.ol"></button>
+      <button class="ql-list" value="bullet" title="无序列表" v-if="$parent.customOptions.ul"></button>
+      <button class="ql-script" value="super" title="上标" v-if="$parent.customOptions.super"></button>
+      <button class="ql-script" value="sub" title="下标" v-if="$parent.customOptions.sub"></button>
+      <button class="ql-link" title="插入超链接" @click="showLink" v-if="$parent.customOptions.link"></button>
+      <button class="ql-ask" title="插入标准问" @click="showAsk" v-if="$parent.customOptions.ask"></button>
+      <select class="ql-color" value="color" title="字体颜色" v-if="$parent.customOptions.color"></select>
+      <select class="ql-background" value="color" title="背景颜色" v-if="$parent.customOptions.background"></select>
+      <button class="ql-image" title="图片" @click="insertImage" v-if="$parent.customOptions.image"></button>
+      <button class="ql-video" title="视频" @click="insertVideo" v-if="$parent.customOptions.video"></button>
+      <button class="ql-source" title="源码模式" @click="showSource" v-if="$parent.customOptions.source"></button>
+      <button class="ql-table" title="插入表格" v-if="$parent.customOptions.table"></button>
+      <button class="ql-point" title="插入锚点" @click="showPoint" v-if="$parent.customOptions.point"></button>
     </div>
     <modal ref="modal" @hide="hideSource" />
-    <video-dialog ref="videoDialog" />
-    <link-dialog ref="linkDialog" />
-    <ask-dialog ref="askDialog" />
-    <point-dialog ref="pointDialog" />
-    <table-wrap ref="table" :visibile="tableWrapShow" />
-    <link-wrap ref="link" :visibile="linkWrapShow" />
-    <ask-wrap ref="ask" :visibile="askWrapShow" />
-    <point-wrap ref="point" :visibile="pointWrapShow" />
+    <video-dialog ref="videoDialog" v-if="$parent.customOptions.video" />
+    <template v-if="$parent.customOptions.link">
+      <link-dialog ref="linkDialog" />
+      <link-wrap ref="link" :visibile="linkWrapShow" />
+    </template>
+    <template v-if="$parent.customOptions.ask">
+      <ask-dialog ref="askDialog"  />
+      <ask-wrap ref="ask" :visibile="askWrapShow" />
+    </template>
+    <template v-if="$parent.customOptions.point">
+      <point-dialog ref="pointDialog" />
+      <point-wrap ref="point" :visibile="pointWrapShow" />
+    </template>
+    <table-wrap ref="table" :visibile="tableWrapShow" v-if="$parent.customOptions.table" />
   </div>
 </template>
 <script>
@@ -144,23 +150,31 @@ export default {
       let bgBtn = quill.querySelector(
         "#toolbar .ql-background .ql-picker-label"
       );
-      colorBtn.innerHTML = `<span class="color-bar"></span>`;
-      bgBtn.innerHTML = "";
+      if(colorBtn) {  
+        colorBtn.innerHTML = `<span class="color-bar"></span>`;
+      }
+      if(bgBtn) {
+        bgBtn.innerHTML = "";
+      }
 
       // 监听点击事件
       quill.addEventListener("click", () => {
-        // 如果字体颜色按钮被设置了value 就显示对应颜色的颜色条
-        if (colorBtn.dataset.value) {
-          colorBtn.querySelector(".color-bar").style.background =
-            colorBtn.dataset.value;
-        } else {
-          colorBtn.querySelector(".color-bar").style.background = "";
+        if(colorBtn) {
+          // 如果字体颜色按钮被设置了value 就显示对应颜色的颜色条
+          if (colorBtn.dataset.value) {
+            colorBtn.querySelector(".color-bar").style.background =
+              colorBtn.dataset.value;
+          } else {
+            colorBtn.querySelector(".color-bar").style.background = "";
+          }
         }
-        // 如果背景颜色按钮被设置里value 就把按钮的背景颜色显示为对应的颜色
-        if (bgBtn.dataset.value) {
-          bgBtn.style.backgroundColor = bgBtn.dataset.value;
-        } else {
-          bgBtn.style.backgroundColor = "";
+        if(bgBtn) {
+          // 如果背景颜色按钮被设置里value 就把按钮的背景颜色显示为对应的颜色
+          if (bgBtn.dataset.value) {
+            bgBtn.style.backgroundColor = bgBtn.dataset.value;
+          } else {
+            bgBtn.style.backgroundColor = "";
+          }
         }
       });
     }
@@ -175,6 +189,8 @@ export default {
 
 <style lang="less" scoped>
 /deep/#toolbar {
+  height: 32px;
+  line-height: 1;
   & > button,
   & > span {
     width: 14px;
@@ -296,5 +312,18 @@ export default {
 }
 .toolbar-wrap {
   position: relative;
+}
+/deep/.el-dialog {
+  .el-dialog__header {
+    padding: 18px 0;
+    text-align: center;
+    border-bottom: 1px solid #dddfe6;
+    .el-dialog__title {
+      color: #676767;
+    }
+  }
+  .el-dialog__body {
+    padding: 16px 30px;
+  }
 }
 </style>

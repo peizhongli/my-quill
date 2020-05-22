@@ -46,17 +46,5 @@
 </style>
 
 <style lang="less">
-  .el-dialog {
-    .el-dialog__header {
-      padding: 18px 0;
-      text-align: center;
-      border-bottom: 1px solid #dddfe6;
-      .el-dialog__title {
-        color: #676767;
-      }
-    }
-    .el-dialog__body {
-      padding: 16px 30px;
-    }
-  }
+  
 </style>
