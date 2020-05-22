@@ -74,6 +74,7 @@ export default {
         margin-right: 10px;
         background: no-repeat center center;
         background-size: 14px auto;
+        cursor: pointer;
         &.insert-row-up {
             background-image: url(../../../assets/icons/insert-row-up.png);
         }

@@ -3,7 +3,7 @@
     <toolbar ref="toolbar" />
     <div ref="editor"></div>
 
-    <p id="counter" v-if="customOptions.counter"></p>
+    <p id="counter"></p>
   </div>
 </template>
 
@@ -45,7 +45,10 @@ export default {
       default: () => {
         return {
           placeholder: "请输入内容...", // 占位符
-          counter: 4000, // 最大长度
+          counter: {
+            show: true,
+            maxLength: 4000,
+          }, // 最大长度
           // 工具栏按钮
           bold: true, // 加粗
           italic: true, // 斜体

@@ -1,8 +1,9 @@
 class Counter {
     constructor(quill, options) {
       this.quill = quill;
-      this.maxLength = options;
+      this.maxLength = options.maxLength;
       this.container = document.querySelector('#counter');
+      this.container.style.opacity = options.show?1:0;
       quill.on('text-change', this.update.bind(this));
       this.update();  // 初始化内容
     }
