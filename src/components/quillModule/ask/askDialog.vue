@@ -2,13 +2,13 @@
   <el-dialog :visible.sync="visible" title="标准问调用" append-to-inner width="674px" @closed="hide">
     <el-form :model="form">
       <el-form-item label="引导话术：" required label-width="100px">
-        <el-input v-model="form.inner" autocomplete="off" placeholder=""></el-input>
+        <el-input v-model="form.inner" autocomplete="off" placeholder="" size="small"></el-input>
       </el-form-item>
       <el-form-item label="标准问题：" required label-width="100px">
-        <el-input v-model="form.value" autocomplete="off" class="small-input"></el-input>
+        <el-input v-model="form.value" autocomplete="off" class="small-input" size="small"></el-input>
       </el-form-item>
       <section style="text-align: right;">
-        <el-button type="primary" @click="save">确定</el-button>
+        <el-button type="primary" @click="save" size="small">确定</el-button>
       </section>
       
     </el-form>
@@ -72,7 +72,7 @@ export default {
       let quill = parent.quill // quill组件
       let range = {
           index: parent.range.index,
-          length: 0
+          length: parent.range.length
         }  // 当前选择的内容
       let insertLength = data.inner.length // 插入链接的文本部分的长度
       // 获取当前内容是否只包含超链接
@@ -93,11 +93,15 @@ export default {
       }
       console.log('range是',range)
       // 插入ask格式的文本
-      quill.insertText(range.index, data.inner, "ask",data.value,"user")
-      // // 把插入的文本选中
-      // quill.setSelection(range.index,insertLength,  "api")
-      // // 将这段文本设置为ask格式 传入value
-      // quill.format('ask', data.value, 'user');
+      // quill.insertText(range.index, data.inner, "ask",data.value,"user")
+      // 插入文本
+      quill.insertText(range.index, data.inner,"user")
+      // 移除可能混淆的格式（因为自己创建的标签似乎跳不出格式）
+      quill.removeFormat(range.index, insertLength, "api")
+      // 把插入的文本选中
+      quill.setSelection(range.index,insertLength,  "api")
+      // 将这段文本设置为ask格式 传入value
+      quill.format('ask', data.value, 'user');
       // 如果没选中文字 把光标放到插入标准问后的位置
       // if(range.length == 0) {
       //   console.log('设置光标')

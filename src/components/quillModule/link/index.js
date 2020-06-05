@@ -3,23 +3,14 @@ let Inline = Quill.import('blots/inline');
 
 class Link extends Inline {
   static create(value) {
-    let node = document.createElement('a')
-    if(value.href) {
-      value = value.href
-    } else {
-      value = this.sanitize(value)
-    }
-    node.setAttribute('href', value);
+    const node = super.create(value);
+    node.setAttribute('href', this.sanitize(value));
     node.setAttribute('target', '_blank');
     return node;
-
   }
 
   static formats(domNode) {
-    return {
-      href: domNode.getAttribute('href'),
-      inner: domNode.innerText
-    };
+    return domNode.getAttribute('href');
   }
 
   static sanitize(url) {
@@ -37,7 +28,7 @@ class Link extends Inline {
 Link.blotName = 'link';
 Link.tagName = 'A';
 Link.SANITIZED_URL = 'about:blank';
-Link.PROTOCOL_WHITELIST = ['http', 'https', 'mailto', 'tel'];
+Link.PROTOCOL_WHITELIST = ['http', 'https', 'mailto', 'tel', '#'];
 
 function sanitize(url, protocols) {
   // const anchor = document.createElement('a');

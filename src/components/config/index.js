@@ -40,24 +40,21 @@ const config = {
                     this.quill.getModule('table').insertTable(2, 2)
                 },
                 // 重置link
-                link(value) {
-                    console.log(value)
-                    // if (value === true) {
-                    //     value = prompt('Enter link URL:'); // eslint-disable-line no-alert
-                    // }
-                    // this.quill.format('link', value, "user");
-                },
+                link() {},
                 // 重置video
-                video() {
-                    console.log(this)
-                }
-                
+                video() {},
+                ask() {},
+                point() {},
+                image() {},
             },
         },
         table: true,
-        // clipboard: {
-        //     matchVisual: false
-        // },
+        counter: {
+            maxLength: 3000
+        },
+        clipboard: {
+            matchVisual: false
+        }
     },
     placeholder: '点击输入 ...'
 }

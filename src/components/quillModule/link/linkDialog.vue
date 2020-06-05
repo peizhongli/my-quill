@@ -1,19 +1,25 @@
 <template>
-  <el-dialog :visible.sync="visible" title="设置链接" append-to-inner width="674px" @closed="hide">
-    <el-form :model="form">
-      <el-form-item label="引导话术：" required label-width="100px">
-        <el-input v-model="form.inner" autocomplete="off" placeholder=""></el-input>
+  <el-dialog :visible.sync="visible" title="设置链接" append-to-inner width="674px" @closed="hide" top="0" :modal="false">
+    <el-form :model="form" :rules="rules" ref="form">
+      <el-form-item label="引导话术：" prop="inner" label-width="100px">
+        <el-input v-model="form.inner" autocomplete="off" placeholder size="medium"></el-input>
       </el-form-item>
-      <el-form-item label="链接地址：" required label-width="100px">
-        <el-input v-model="form.href" autocomplete="off" class="small-input"></el-input>
-        <el-button >访问</el-button>
-        <el-button type="primary" @click="save">确定</el-button>
+      <el-form-item label="链接地址：" prop="href" label-width="100px">
+        <el-input v-model="form.href" autocomplete="off" class="small-input" size="medium"></el-input>
+        <el-button size="medium" @click="visit">访问</el-button>
+        <el-button type="primary" @click="beforeSave" size="medium">确定</el-button>
       </el-form-item>
     </el-form>
+    <image-text />
   </el-dialog>
 </template>
 <script>
+import imageText from './imageText'
+const whiteList = ['http', 'https', 'mailto', 'tel']
 export default {
+  components: {
+    imageText
+  },
   data() {
     return {
       visible: false,
@@ -21,35 +27,40 @@ export default {
         inner: '',
         href: '',
       },
-      linkRange: {
-        index: 0,
-        length: 0,
+      rules: {
+        inner: [
+            { required: true, message: '请输入引导话术', trigger: 'blur' },
+          ],
+          href: [
+            { validator: this.checkHref }
+          ],
       },
+      fromVisit: false,
     }
   },
   methods: {
+    visit() {
+      this.fromVisit = true;
+      this.$refs.form.validateField("href", error => {
+        return;
+      });
+      this.fromVisit = false;
+      let url = this.form.href
+      if(url.indexOf('#')==0) {
+        return;
+      }else if(!whiteList.find(i=>url.indexOf(i)==0)){
+        url = `http://${url}`
+      }
+      window.open(url);
+    },
     show() {
-      let parent = this.$parent.$parent // 父组件
-      let quill = parent.quill // quill组件
-      this.form.inner = parent.selectionText
-
-      // 返回所选/聚焦文字的内容——包含格式数据的Delta数据。
-      let current = quill.getFormat()
+      let toolbar = this.$parent // 工具栏组件
+      let quill = this.$parent.$parent.quill
+      this.form.inner = this.$parent.$parent.selectionText
       // 如果选中/聚焦的文字包含链接 需要获取链接文字的index和长度
-      if(current.link) {
-        this.form.href = current.link.href
-        this.form.inner = current.link.inner
-        let innerLen = current.link.inner.length
-        let curIndex = parent.range.index
-        let curContent = quill.getContents(curIndex,innerLen).ops
-        // 从当前元素向前查找 长度为当前超链接的长度 如果getContents的结果只包含一种 说明这是完整的链接内容 存住这个index和length
-        while(!(curContent.length==1&&curContent[0].attributes&&curContent[0].attributes.link)) {
-          curIndex --
-          curContent = quill.getContents(curIndex,innerLen).ops
-        }
-        this.linkRange.index = curIndex
-        this.linkRange.length = innerLen
-        console.log(this.linkRange.index,this.linkRange.length)
+      if(toolbar.domType=='link') {
+        this.form.inner = toolbar.dom.innerText
+        this.form.href = quill.getFormat().link
       }
       this.visible = true
     },
@@ -58,40 +69,52 @@ export default {
       this.visible = false
       this.form.inner = ''
       this.form.href = ''
-      this.linkRange.index = 0
-      this.linkRange.length = 0
+      this.fromVisit = false
+      this.$refs.form.resetFields()
     },
-    save() {
-      let data = {
-        inner: this.form.inner,
-        href: this.form.href,
+    checkHref (rule, value, callback) {
+      if(this.fromVisit && value.trim()==='') {
+        callback(new Error('请输入链接地址'));
+      } else {
+        callback()
       }
+    },
+    beforeSave() {
+      this.$refs.form.validate(valid => {
+        if(valid) {
+          this.save()
+        }
+      });
+    },
+
+    save() {
       let parent = this.$parent.$parent
       let quill = parent.quill // quill组件
+      let toolbar = this.$parent
       let range = {
           index: parent.range.index,
-          length: 0
+          length: parent.range.length
         }  // 当前选择的内容
-      let insertLength = data.inner.length // 插入链接的文本部分的长度
-      // 获取当前内容是否只包含超链接
-      let curContent = quill.getContents(parent.range.index,parent.range.length).ops
+      let insertLength = this.form.inner.length // 插入链接的文本部分的长度
+
       // 如果是修改链接 要先删除原本的链接 这个链接就是show方法中while循环出来的
-      if(this.linkRange.length > 1) {
-        range.index = this.linkRange.index
-        range.length = this.linkRange.length
-      } 
-      if(curContent.length > 1) {
-        range.index = parent.range.index
-        range.length = parent.range.length
-      } 
+      if(toolbar.domType=='link') {
+        range.index = toolbar.domIndex
+        range.length = toolbar.dom.innerText.length
+      }
+      if(toolbar.dom) {
+        quill.removeFormat(toolbar.domIndex, toolbar.dom.innerText.length)
+      }
+
       // 如果选中文字/修改链接的话 先把这段文字删除 再插入更新后a标签内的文本
       if(range.length > 0){
-        quill.deleteText(range.index,range.length)
+        quill.deleteText(range.index, range.length)
       }
       // 插入link格式的文本
-      quill.insertText(range.index, data.inner,'link', data.href,  "user")
+      quill.insertText(range.index, this.form.inner, 'link', this.form.href, "user")
+      // quill.removeFormat(range.index, insertLength, "api")
       // // 把插入的文本选中
-      // quill.setSelection(range.index,insertLength,  "api")
+      // quill.setSelection(range.index, insertLength , "api")
       // // 将这段文本设置为link格式 传入href
       // quill.format('link', data.href, 'user');
       // // 如果没选中文字 把光标放到插入链接后的位置
@@ -100,7 +123,7 @@ export default {
       //   quill.setSelection(range.index + insertLength, 0,  "api")
       // }
       quill.setSelection(range.index + insertLength, 0,  "api")
-      this.$emit('save',data)
+      this.$emit('save')
       this.hide()
       this.$parent.linkWrapShow = false
     }
@@ -108,13 +131,15 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-  /deep/.el-dialog {
-    .el-form-item__content {
-      display: flex;
-      .el-button {
-        margin-left: 10px;
-      }
+/deep/.el-dialog {
+  top: 50%;
+  transform: translateY(-50%);
+  .el-form-item__content {
+    display: flex;
+    .el-button {
+      margin-left: 10px;
+      padding: 10px 13px;
     }
   }
-  
+}
 </style>
